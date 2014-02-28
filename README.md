@@ -12,4 +12,4 @@ interoperability with programming and data exchange languages.
 ## Implementation
 
 * [Qrb](https://github.com/blambeau/qrb) - Q in Ruby (validation & coercing, about to release)
-* [Qjs](https://github.com/blambeau/qjs) - Q in Javascript (validation & coercing, work in progress)
+* [Qjs](https://github.com/llambeau/qjs) - Q in Javascript (validation & coercing, work in progress)
