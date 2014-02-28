@@ -62,3 +62,16 @@ ul li {
 .menu ul > li.active li.active a {
   border-left: 1px solid black;
 }
+pre {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+.img {
+  text-align:center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+img {
+  width: 60%;
+  margin: auto;
+}

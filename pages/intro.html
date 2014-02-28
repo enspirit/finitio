@@ -15,6 +15,14 @@
       </ul>
     </li>
     <li>
+      <a href="#information-contracts">Information Contracts</a>
+      <ul class="nav">
+        <li>
+          <a href="#dressing-undressing">Dressing/Undressing</a>
+        </li>
+      </ul>
+    </li>
+    <li>
       <a href="#type-system">Type System</a>
       <ul class="nav">
         <li><a href="#builtin-types">Builtins</a></li>
@@ -136,6 +144,70 @@ add your own binding to this list!):
   <li><a href="https://github.com/llambeau/qjs">Qjs</a> &mdash; <em>Q</em> in Javascript (under development)</li>
 </ul>
 
+<h1 id="information-contracts">
+<a name="information-contracts" class="anchor" href="#information-contracts"><span class="octicon octicon-link"></span></a>Information Contracts</h1>
+
+<p><em>Q</em> tries very hard not to be <em>yet another data language</em>. In
+particular, it aims at integrating as smoothly as possible with existing
+technologies, in particular with programming languages and data exchange
+formats (e.g. JSON or YAML).</p>
+
+<p>This interoperability is handled through so-called <em>information
+contracts</em>. In some respect, information contracts are the dual of
+axiomatic contracts, i.e. the dual of public behavioral APIs of software
+abstractions.</p>
+
+<p class="img"><img src="/img/contracts.png"/></p>
+
+<p>For a given software abstraction, say a <code>Color</code>:</p>
+
+<ul>
+<li>The <em>axiomatic</em> contract hides the internal representation in favor
+of a set of public behavioral methods to manipulate the abstraction (e.g.
+darkening and brightening the color),</li>
+<li>The <em>information</em> contract hides the internal representation in
+favor of a set of public information representations of the abstraction (e.g.
+a RGB triple, an hexadecimal string).</li>
+</ul>
+
+<p>The data types involved in the definitions of the information contracts are
+called <em>information types</em>, e.g. <code>{r: Byte, g: Byte, b:
+Byte}</code> (a <a href="#tuple-types">tuple type</a>). <em>Q</em> provides a
+<a href="#type-system">rich type system</a> dedicated at capturing those data
+types precisely, mostly because type systems of main stream programming
+languages fail at providing an good support for them. The interoperability of
+<em>Q</em> with those other type systems is covered a bit later.</p>
+
+<h2 id="dressing-undressing">
+<a name="dressing-undressing" class="anchor" href="#dressing-undressing"><span class="octicon octicon-link"></span></a>Dressing &amp; Undressing</h1>
+
+<p>In a more precise way, an information contract is actually a set of
+functions pairs, such as:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># RGB information contract</span>
+<span class="n">dress</span>   <span class="o">::</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span><span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="no">Color</span>
+<span class="n">undress</span> <span class="o">::</span> <span class="no">Color</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span><span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
+
+<span class="c1"># HEX information contract</span>
+<span class="n">dress</span>   <span class="o">::</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/#[a-z0-9]{6}/</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Color</span>
+<span class="n">undress</span> <span class="o">::</span> <span class="no">Color</span> <span class="o">-&gt;</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/#[a-z0-9]{6}/</span> <span class="p">)</span>
+</pre></div>
+
+<p>In other words, each public data representation of an abstraction comes
+with two (pure) functions that allow <em>dressing</em> the corresponding
+information type with the abstraction behavior, and <em>undressing</em> the latter
+the other way round.</p>
+
+<p>The information contract is required to guarantee <em>information
+equivalence</em> of the various representations. Information equivalence is
+defined as shown below. This supposes some definition for the two equality
+operators involved, e.g. on the abstraction type and the information type,
+respectively.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">dress</span><span class="p">(</span><span class="n">undress</span><span class="p">(</span><span class="n">adt</span><span class="p">))</span>  <span class="o">=</span> <span class="n">adt</span>
+<span class="n">undress</span><span class="p">(</span><span class="n">dress</span><span class="p">(</span><span class="n">info</span><span class="p">))</span> <span class="o">=</span> <span class="n">info</span>
+</pre></div>
+
 <h1 id="type-system">
 <a name="type-system" class="anchor" href="#type-system"><span class="octicon octicon-link"></span></a>Type System</h1>
 
@@ -255,24 +327,28 @@ a sequence of tuples instead:</p>
 <h2 id="abstract-data-types">
 <a name="abstract-data-types" class="anchor" href="#abstract-data-types"><span class="octicon octicon-link"></span></a>Abstract Data types</h2>
 
-<p>Abstract data types, also called user-defined types, provide the way to define
-higher level abstractions easily and to optionally connect them to types of
-the host language (e.g. a ruby class). For instance, a <code>Color</code> abstraction can
-be defined as follows:</p>
+<p>Abstract data types, also called user-defined types, provide the way to
+define higher level abstractions easily and to optionally connect them to
+types of the host language (e.g. a ruby class). For instance, a
+<code>Color</code> abstraction can be defined as follows:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">},</span>
         <span class="o">&lt;</span><span class="n">hex</span><span class="o">&gt;</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/^#[0-9a-f]{6}$/i</span> <span class="p">)</span>
 </pre></div>
 
-<p>The Color definition above shows that a color can be represented either by a
-RGB triple (through a tuple type), or by a hexadecimal string (e.g.
-'#8a2be2'). <code>rgb</code> and <code>hex</code> are called the <strong>information contracts</strong> of the
-Color abstraction.</p>
+<p>The Color definition above shows that a color can be represented either by
+a RGB triple (through a tuple type), or by a hexadecimal string (e.g. #8a2be2).
+<code>rgb</code> and <code>hex</code> are called the <strong>information
+representations</strong> of the Color abstraction.</p>
 
-<p>Defined as above, the type will behave as a union type, i.e. it will let pass
-valid RGB triples and hexadecimal strings. Now, information contracts can also
-be complemented to connect the Color abstraction to a host language type, e.g.
-a Color ruby class.</p>
+<h3 id="adt-and-host">
+<a name="adt-and-host" class="anchor" href="#adt-and-host"><span class="octicon octicon-link"></span></a>Binding an ADT to the host language</h3>
+
+<p>Defined as above, the type will behave as a union type, i.e. it will let
+pass valid RGB triples and hexadecimal strings. Now, representations can be
+complemented to connect the Color abstraction to a host language type, e.g. a
+Color ruby class, and raise the level of discourse on the programming side.
+This amounts at providing one information contract per representation.</p>
 
 <p>Suppose for example that the following <code>Color</code> class has been defined:</p>
 
@@ -286,26 +362,34 @@ a Color ruby class.</p>
 <span class="k">end</span>
 </pre></div>
 
-<p>Connecting our information type to this Color class is through a builtin type
-and two explicit converters (we only show the <code>rgb</code> contract here, the <code>hex</code>
-one is defined in a similar way):</p>
+<p>Connecting our information ADT to this Color class can be done through a
+builtin type and two explicit converters, called the <em>dresser</em> and the
+<em>undresser</em>: (We only show the <code>rgb</code> case here, the
+<code>hex</code> one is defined in a similar way)</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
           <span class="p">\(</span> <span class="n">tuple</span> <span class="o">|</span> <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="p">)</span>
           <span class="p">\(</span> <span class="n">color</span> <span class="o">|</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">b</span><span class="p">}</span> <span class="p">)</span>
 </pre></div>
 
-<p>The converters provide load/dump code to convert from information types to the
-code abstraction and vice versa. Q(rb) guarantees that they will be executed
-on valid representations of the corresponding information types. Nevertheless,
-this code tends to be exposed to the unsafe world and should always be kept
-<em>pure and safe</em> (no side effect, no metaprogramming, no code evaluation,
-etc.).</p>
+<p>The converters provide load/dump code to convert from information types to
+the code abstraction and vice versa, thereby complementing a representation
+with an information contract. A binding of <em>Q</em>, e.g. Qrb, guarantees
+that the dresser will only be executed on valid representations of the
+corresponding information type. As the dresser tends to be exposed to an
+unsafe world, however, it should always be kept <em>pure and safe</em> (no
+side effect, no metaprogramming, no code evaluation, etc.).</p>
 
-<p>Qrb provides a more idiomatic way of connecting ruby classes to information
-types, through convention over configuration. The converters can indeed be
-moved to the class itself, as one would probably do it for testing purpose or
-because the converters are idiomatic methods for the class:</p>
+<h3 id="adt-and-host-contracts">
+<a name="adt-and-host-contracts" class="anchor" href="#adt-and-host"><span class="octicon octicon-link"></span></a>Host ADT protocols</h3>
+
+<p>In order to keep <em>Q</em> schemas as clean as possible, implementations
+may provide conventions-over-configuration protocols for automating
+information contracts.</p>
+
+<p>For instance, Qrb provides a more idiomatic way of connecting ruby classes
+to information types. The information contracts may indeed be moved to the
+class itself, as one would probably do it, e.g. for testing purpose.</p>
 
 <div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Color</span>
 
@@ -325,9 +409,10 @@ because the converters are idiomatic methods for the class:</p>
 <span class="k">end</span>
 </pre></div>
 
-<p>The following Q definition, that refers to the builtin type but has no
-converter, makes the assumption that the convention is met and will use the
-methods for convertions:</p>
+<p>In Qrb, the following definition, that refers to the builtin type but has
+no dresser/undresser, makes the assumption that the convention is met and
+will use the <code>Color.rgb(...)</code> and <code>Color#to_rgb</code>
+methods:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
 </pre></div>
