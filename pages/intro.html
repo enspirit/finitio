@@ -1,43 +1,6 @@
-<div class="menu">
-  <ul class="nav">
-    <li>
-      <a href="#q"><em>Q</em> &mdash; A Data Language</a>
-      <ul class="nav">
-        <li>
-          <a href="#example">Example</a>
-        </li>
-        <li>
-          <a href="#use-cases">Use cases</a>
-        </li>
-        <li>
-          <a href="#implementations">Implementations</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href="#information-contracts">Information Contracts</a>
-      <ul class="nav">
-        <li>
-          <a href="#dressing-undressing">Dressing/Undressing</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href="#type-system">Type System</a>
-      <ul class="nav">
-        <li><a href="#builtin-types">Builtins</a></li>
-        <li><a href="#sub-types">Subtypes</a></li>
-        <li><a href="#union-types">Unions</a></li>
-        <li><a href="#seq-types">Sequences</a></li>
-        <li><a href="#set-types">Sets</a></li>
-        <li><a href="#tuple-types">Tuples</a></li>
-        <li><a href="#relation-types">Relations</a></li>
-        <li><a href="#abstract-data-types">ADTs</a></li>
-      </ul>
-    </li>
-  </ul>
-</div>
+<div class="row">
 
+<div class="col-md-10">
 <h1 id="q">
 <a name="q" class="anchor" href="#q"><span class="octicon octicon-link"></span></a>Q</h1>
 
@@ -70,7 +33,7 @@ At left, a typical digital document in JSON. At right, the corresponding <em>Q</
 </pre></div>
 </div>
 <div class="col-md-6">
-<div class="highlight highlight-ruby"><pre><span class="no">Temperature</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">celcius</span><span class="o">&gt;</span> <span class="no">Real</span><span class="p">(</span> <span class="n">f</span> <span class="o">|</span> <span class="n">f</span> <span class="o">&gt;=</span> <span class="mi">33</span><span class="o">.</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="o">.</span><span class="mi">0</span> <span class="p">)</span>
+<div class="highlight highlight-ruby"><pre><span class="no">Temp</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">celcius</span><span class="o">&gt;</span> <span class="no">Real</span><span class="p">(</span> <span class="n">f</span> <span class="o">|</span> <span class="n">f</span> <span class="o">&gt;=</span> <span class="mi">33</span><span class="o">.</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="o">.</span><span class="mi">0</span> <span class="p">)</span>
 <span class="p">{</span>
   <span class="n">patient</span> <span class="p">:</span> <span class="p">{</span>
     <span class="nb">id</span>   <span class="p">:</span> <span class="no">Uuid</span><span class="p">,</span>
@@ -78,7 +41,7 @@ At left, a typical digital document in JSON. At right, the corresponding <em>Q</
     <span class="n">dob</span>  <span class="p">:</span> <span class="no">Date</span><span class="p">(</span> <span class="n">d</span> <span class="o">|</span> <span class="ss">alive</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">year</span> <span class="o">&gt;</span> <span class="mi">1890</span> <span class="p">),</span>
   <span class="p">},</span>
   <span class="n">symptoms</span> <span class="p">:</span> <span class="o">[</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">]</span><span class="p">,</span>
-  <span class="n">temperature</span> <span class="p">:</span> <span class="no">Temperature</span>
+  <span class="n">temperature</span> <span class="p">:</span> <span class="no">Temp</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -88,10 +51,18 @@ At left, a typical digital document in JSON. At right, the corresponding <em>Q</
 validate input data and get friendly error messages.</p>
 
 <div class='row'>
-<div class="col-md-6">
+<div class="col-md-7">
+<pre><code>[patient] Missing attribute `name`
+[patient/id] Invalid value `27b3ceb0` for Uuid
+[patient/dob] Invalid value `1875-11-03` for Date (not alive)
+[symptoms/1] Invalid value "" for String( s | s.size &gt; 0 )
+[temperature] Invalid value 12.5 for Temperature (celcius)
+</code></pre>
+</div>
+<div class="col-md-5">
 <div class="highlight highlight-json"><pre><span class="p">{</span>
   <span class="nt">"patient"</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"27b3ceb0-7e10-0131-c9f1-3c07545ed162"</span><span class="p">,</span>
+    <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"27b3ceb0"</span><span class="p">,</span>
     <span class="nt">"dob"</span><span class="p">:</span> <span class="s2">"1875-11-03"</span>
   <span class="p">},</span>
   <span class="nt">"symptoms"</span><span class="p">:</span> <span class="p">[</span>
@@ -101,13 +72,6 @@ validate input data and get friendly error messages.</p>
   <span class="nt">"temperature"</span><span class="p">:</span> <span class="mf">12.5</span>
 <span class="p">}</span>
 </pre></div>
-</div>
-<div class="col-md-6">
-<pre><code>[patient] Missing attribute `name`
-[patient/dob] Invalid value `1875-11-03` for Date (not alive)
-[symptoms/1] Invalid value "" for String( s | s.size &gt; 0 )
-[temperature] Invalid value 12.5 for Temperature (celcius)
-</code></pre>
 </div>
 </div>
 
@@ -416,7 +380,48 @@ methods:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
 </pre></div>
+</div>
 
-<script>
-$('body').scrollspy({ target: '.menu' })
-</script>
+<div class="col-md-2">
+<div class="menu">
+  <ul class="nav">
+    <li>
+      <a href="#q"><em>Q</em> &mdash; A Data Language</a>
+      <ul class="nav">
+        <li>
+          <a href="#example">Example</a>
+        </li>
+        <li>
+          <a href="#use-cases">Use cases</a>
+        </li>
+        <li>
+          <a href="#implementations">Implementations</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#information-contracts">Information Contracts</a>
+      <ul class="nav">
+        <li>
+          <a href="#dressing-undressing">Dressing/Undressing</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#type-system">Type System</a>
+      <ul class="nav">
+        <li><a href="#builtin-types">Builtins</a></li>
+        <li><a href="#sub-types">Subtypes</a></li>
+        <li><a href="#union-types">Unions</a></li>
+        <li><a href="#seq-types">Sequences</a></li>
+        <li><a href="#set-types">Sets</a></li>
+        <li><a href="#tuple-types">Tuples</a></li>
+        <li><a href="#relation-types">Relations</a></li>
+        <li><a href="#abstract-data-types">ADTs</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+</div>
+</div>

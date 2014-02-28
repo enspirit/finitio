@@ -42,7 +42,6 @@ ul li {
 .menu {
   position: fixed;
   top: 80px;
-  right: 40px;
   font-size: 16px;
 }
 .menu ul ul {
@@ -74,4 +73,7 @@ pre {
 img {
   width: 60%;
   margin: auto;
+}
+@media screen and (max-width: 960px) {
+  .menu{ display: none; }
 }
