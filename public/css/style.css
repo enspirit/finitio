@@ -1,0 +1,64 @@
+body {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: #555;
+  font-size: 18px;
+  line-height: 1.5;
+}
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  color: #333;
+}
+h1 {
+  font-style: italic;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 25px;
+}
+h1:first-child {
+  font-size: 48px;
+}
+h1:before {
+  content: '~';
+}
+h1:after {
+  content: ' ~';
+}
+h2 {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+ul li {
+  margin: 0px;
+  padding-top: 5px;
+  padding-bottom: 0px;
+}
+.menu {
+  position: fixed;
+  top: 80px;
+  right: 40px;
+  font-size: 16px;
+}
+.menu ul ul {
+  margin-left: 20px;
+  font-size: 13px;
+}
+.menu ul li a {
+  padding: 5px 10px;
+  border-left: 1px solid white;
+}
+.menu ul > li.active a {
+  border-left: 1px solid black;
+}
+.menu ul > li.active li a {
+  border-left: 1px solid white;
+}
+.menu ul > li.active li.active a {
+  border-left: 1px solid black;
+}
