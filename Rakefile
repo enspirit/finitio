@@ -1,8 +1,8 @@
 desc "Use github markdown API to convert .md => .html"
-task :makepages do
+task :snippets do
   require 'rest_client'
   require 'path'
-  (Path.dir/'pages').glob('**/*.md') do |page|
+  (Path.dir/'snippets').glob('**/*.md') do |page|
     target = page.sub_ext('.html')
     data = {
       "text" => page.read,
