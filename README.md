@@ -7,7 +7,7 @@ interoperability with programming and data exchange languages.
 
 ## Links
 
-* [Official *Q* web-site](http://q-lang.herokuapp.com)
+* [Official *Q* web-site](http://www.q-lang.io)
 
 ## Implementation
 
