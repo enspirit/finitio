@@ -39,6 +39,9 @@ ul li {
   padding-top: 5px;
   padding-bottom: 0px;
 }
+nav li {
+  padding-top: 0px;
+}
 .menu {
   position: fixed;
   top: 80px;
@@ -60,6 +63,9 @@ ul li {
 }
 .menu ul > li.active li.active a {
   border-left: 1px solid black;
+}
+.tab-pane {
+  padding-top: 15px;
 }
 pre {
   margin-top: 10px;

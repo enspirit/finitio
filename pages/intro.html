@@ -1,8 +1,7 @@
 <div class="row">
 
 <div class="col-md-10">
-<h1 id="q">
-<a name="q" class="anchor" href="#q"><span class="octicon octicon-link"></span></a>Q</h1>
+<h1 id="q">Q</h1>
 
 <p><em>Q</em> is a data language. For now, it is limited to a data
 <em>definition</em> language (DDL). Think "JSON/XML schema", but the correct
@@ -10,9 +9,17 @@ way. <em>Q</em> comes with a dedicated type system for defining data and a
 theory, called <em>information contracts</em>, for interoperability with
 programming and data exchange languages.</p>
 
-<h2 id="example">
-<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
+<h2 id="examples">Examples</h2>
 
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#validating" data-toggle="tab">Validating</a></li>
+  <li><a href="#coercing" data-toggle="tab">Coercing</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="validating">
 <p>Suppose we want to capture information about a medical diagnosis for some patient.
 At left, a typical digital document in JSON. At right, the corresponding <em>Q</em> schema.</p>
 
@@ -37,10 +44,10 @@ At left, a typical digital document in JSON. At right, the corresponding <em>Q</
 <span class="p">{</span>
   <span class="n">patient</span> <span class="p">:</span> <span class="p">{</span>
     <span class="nb">id</span>   <span class="p">:</span> <span class="no">Uuid</span><span class="p">,</span>
-    <span class="nb">name</span> <span class="p">:</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">),</span>
+    <span class="nb">name</span> <span class="p">:</span> <span class="no">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">),</span>
     <span class="n">dob</span>  <span class="p">:</span> <span class="no">Date</span><span class="p">(</span> <span class="n">d</span> <span class="o">|</span> <span class="ss">alive</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">year</span> <span class="o">&gt;</span> <span class="mi">1890</span> <span class="p">),</span>
   <span class="p">},</span>
-  <span class="n">symptoms</span> <span class="p">:</span> <span class="o">[</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">]</span><span class="p">,</span>
+  <span class="n">symptoms</span> <span class="p">:</span> <span class="o">[</span> <span class="no">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">]</span><span class="p">,</span>
   <span class="n">temperature</span> <span class="p">:</span> <span class="no">Temp</span>
 <span class="p">}</span>
 </pre></div>
@@ -51,14 +58,6 @@ At left, a typical digital document in JSON. At right, the corresponding <em>Q</
 validate input data and get friendly error messages.</p>
 
 <div class='row'>
-<div class="col-md-7">
-<pre><code>[patient] Missing attribute `name`
-[patient/id] Invalid value `27b3ceb0` for Uuid
-[patient/dob] Invalid value `1875-11-03` for Date (not alive)
-[symptoms/1] Invalid value "" for String( s | s.size &gt; 0 )
-[temperature] Invalid value 12.5 for Temperature (celcius)
-</code></pre>
-</div>
 <div class="col-md-5">
 <div class="highlight highlight-json"><pre><span class="p">{</span>
   <span class="nt">"patient"</span><span class="p">:</span> <span class="p">{</span>
@@ -73,16 +72,80 @@ validate input data and get friendly error messages.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
+<div class="col-md-7">
+<pre><code>[patient] Missing attribute `name`
+[patient/id] Invalid value `27b3ceb0` for Uuid
+[patient/dob] Invalid value `1875-11-03` for Date (not alive)
+[symptoms/1] Invalid value "" for String( s | s.size &gt; 0 )
+[temperature] Invalid value 12.5 for Temperature (celcius)
+</code></pre>
+</div>
+</div>
 </div>
 
-<h2 id="use-cases">
-<a name="use-cases" class="anchor" href="#use-cases"><span class="octicon octicon-link"></span></a>Use cases</h2>
+<div class="tab-pane" id="coercing">
+
+<p>Data exchange languages, e.g. JSON, impose a very low data abstraction
+level: e.g. boolean, string &amp; numbers. <em>Q</em> helps raising the
+level of discourse while navigating up and down in abstraction levels
+with <a href="#information-contracts">information contracts</a>:</p>
+
+<div class='row'>
+<div class="col-md-6">
+<div class="highlight highlight-json"><pre><span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">"where"</span><span class="p">:</span> <span class="s2">"Brussels"</span><span class="p">,</span>
+    <span class="nt">"at"</span><span class="p">:</span> <span class="s2">"2014-03-01"</span><span class="p">,</span>
+    <span class="nt">"temperature"</span><span class="p">:</span> <span class="mf">13.5</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="nt">"where"</span><span class="p">:</span> <span class="s2">"Paris"</span><span class="p">,</span>
+    <span class="nt">"at"</span><span class="p">:</span> <span class="s2">"2014-02-27"</span><span class="p">,</span>
+    <span class="nt">"temperature"</span><span class="p">:</span> <span class="mf">12.0</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="col-md-6">
+<div class="highlight highlight-ruby"><pre><span class="no">Measure</span> <span class="o">=</span> <span class="o">.</span><span class="n">Measure</span> <span class="o">&lt;</span><span class="n">info</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="ss">where</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span>
+  <span class="ss">at</span><span class="p">:</span> <span class="no">Date</span><span class="p">,</span>
+  <span class="ss">temperature</span><span class="p">:</span> <span class="nb">Float</span><span class="p">(</span> <span class="n">f</span> <span class="o">|</span> <span class="n">f</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">40</span><span class="o">.</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">&lt;=</span> <span class="mi">50</span><span class="o">.</span><span class="mi">0</span> <span class="p">)</span>
+<span class="p">}</span>
+<span class="o">[</span><span class="no">Measure</span><span class="o">]</span>
+</pre></div>
+<p style="font-size: 90%;">Two information contracts here. An implicit one,
+<code>Date</code>, provided by <em>Q</em> itself (see <a
+href="#implementations">implementations</a>) and another one, <code>Measure</code> that
+connects a <a href="#tuple-types">tuple type</a> to a <code>Measure</code> class.</p>
+</div>
+</div>
+
+<p>In Qrb for instance, the ruby binding of <em>Q</em>, loading and dressing
+the JSON data above correctly returns an <code>Array</code> of <code>Measure</code>
+instances. Dates are automatically coerced too:</p>
+
+<div class='row'>
+<div class="col-md-12">
+<div class="highlight highlight-ruby"><pre><span class="o">[</span>
+   <span class="c1">#&lt;Measure:0x007fb5d3a1ba40 @where="Brussels", @at=#&lt;Date: 2014-03-01&gt;, @temperature=13.5&gt;,</span>
+   <span class="c1">#&lt;Measure:0x007fb5d3a16450 @where="Paris", @at=#&lt;Date: 2014-02-27&gt;, @temperature=12.0&gt;</span>
+<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<h2 id="use-cases">Use cases</h2>
 
 <p><em>Q</em> can be used in many places where data is involved. In particular, it can be used for:</p>
 
 <ul>
   <li><em>Enforcing</em> data types towards more robust and secure (RESTful)
   web-services, configuration files, data exchanges, etc.</li>
+  <li><em>Validating</em> data input, e.g. screens and HTML forms.</li>
   <li><em>Coercing</em> low-level to high-level types when digesting data, to
   palliate the fact that exchange languages have limited type systems (e.g.
   JSON has no builtin time type) and raise the level of abstraction in a safe
@@ -94,8 +157,7 @@ validate input data and get friendly error messages.</p>
   languages, data exchange languages, etc.</li>
 </ul>
 
-<h2 id="implementations">
-<a name="implementations" class="anchor" href="#implementations"><span class="octicon octicon-link"></span></a>Implementations</h2>
+<h2 id="implementations">Implementations</h2>
 
 Obviously the scenarios outlined in previous section require an
 implementation, or <em>binding</em> of <em>Q</em>, for the situation at hand.
@@ -108,72 +170,7 @@ add your own binding to this list!):
   <li><a href="https://github.com/llambeau/qjs">Qjs</a> &mdash; <em>Q</em> in Javascript (under development)</li>
 </ul>
 
-<h1 id="information-contracts">
-<a name="information-contracts" class="anchor" href="#information-contracts"><span class="octicon octicon-link"></span></a>Information Contracts</h1>
-
-<p><em>Q</em> tries very hard not to be <em>yet another data language</em>. In
-particular, it aims at integrating as smoothly as possible with existing
-technologies, in particular with programming languages and data exchange
-formats (e.g. JSON or YAML).</p>
-
-<p>This interoperability is handled through so-called <em>information
-contracts</em>. In some respect, information contracts are the dual of
-axiomatic contracts, i.e. the dual of public behavioral APIs of software
-abstractions.</p>
-
-<p class="img"><img src="/img/contracts.png"/></p>
-
-<p>For a given software abstraction, say a <code>Color</code>:</p>
-
-<ul>
-<li>The <em>axiomatic</em> contract hides the internal representation in favor
-of a set of public behavioral methods to manipulate the abstraction (e.g.
-darkening and brightening the color),</li>
-<li>The <em>information</em> contract hides the internal representation in
-favor of a set of public information representations of the abstraction (e.g.
-a RGB triple, an hexadecimal string).</li>
-</ul>
-
-<p>The data types involved in the definitions of the information contracts are
-called <em>information types</em>, e.g. <code>{r: Byte, g: Byte, b:
-Byte}</code> (a <a href="#tuple-types">tuple type</a>). <em>Q</em> provides a
-<a href="#type-system">rich type system</a> dedicated at capturing those data
-types precisely, mostly because type systems of main stream programming
-languages fail at providing an good support for them. The interoperability of
-<em>Q</em> with those other type systems is covered a bit later.</p>
-
-<h2 id="dressing-undressing">
-<a name="dressing-undressing" class="anchor" href="#dressing-undressing"><span class="octicon octicon-link"></span></a>Dressing &amp; Undressing</h1>
-
-<p>In a more precise way, an information contract is actually a set of
-functions pairs, such as:</p>
-
-<div class="highlight highlight-ruby"><pre><span class="c1"># RGB information contract</span>
-<span class="n">dress</span>   <span class="o">::</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span><span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="no">Color</span>
-<span class="n">undress</span> <span class="o">::</span> <span class="no">Color</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span><span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
-
-<span class="c1"># HEX information contract</span>
-<span class="n">dress</span>   <span class="o">::</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/#[a-z0-9]{6}/</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Color</span>
-<span class="n">undress</span> <span class="o">::</span> <span class="no">Color</span> <span class="o">-&gt;</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/#[a-z0-9]{6}/</span> <span class="p">)</span>
-</pre></div>
-
-<p>In other words, each public data representation of an abstraction comes
-with two (pure) functions that allow <em>dressing</em> the corresponding
-information type with the abstraction behavior, and <em>undressing</em> the latter
-the other way round.</p>
-
-<p>The information contract is required to guarantee <em>information
-equivalence</em> of the various representations. Information equivalence is
-defined as shown below. This supposes some definition for the two equality
-operators involved, e.g. on the abstraction type and the information type,
-respectively.</p>
-
-<div class="highlight highlight-ruby"><pre><span class="n">dress</span><span class="p">(</span><span class="n">undress</span><span class="p">(</span><span class="n">adt</span><span class="p">))</span>  <span class="o">=</span> <span class="n">adt</span>
-<span class="n">undress</span><span class="p">(</span><span class="n">dress</span><span class="p">(</span><span class="n">info</span><span class="p">))</span> <span class="o">=</span> <span class="n">info</span>
-</pre></div>
-
-<h1 id="type-system">
-<a name="type-system" class="anchor" href="#type-system"><span class="octicon octicon-link"></span></a>Type System</h1>
+<h1 id="type-system">Type System</h1>
 
 <p><em>Q</em>'s type system is different from those you can find in a
 programming language. The aim here is to capture <em>information</em>, not
@@ -181,39 +178,50 @@ software <em>behavior</em>. Therefore, the definition of <em>type</em>
 differs. In <em>Q</em>, a type is a set of values, a subtype is a subset, a
 supertype is a superset. That's it.</p>
 
-The point here is <b>not</b> to define yet another type system with a fixed
-set of available types such as <code>boolean</code>, <code>string</code> and
-<code>integer</code>, but rather to provide an abstract way of building
+<p>However, the aim here is <b>not</b> to define yet another type system with a
+fixed set of available types such as <code>boolean</code>, <code>string</code>
+and <code>integer</code>, but rather to provide an abstract way of building
 <em>information types</em> and to 'connect' them to the types available in a
-programming language, or data exchange language.
+<em>host</em> programming language, or data exchange language.</p>
 
-<h2 id="builtin-types">
-<a name="builtin-types" class="anchor" href="#builtin-types"><span class="octicon octicon-link"></span></a>Builtin types</h2>
+<p>For this, a <em>Q</em> implementation has to define a representation
+function that maps, for each <em>Q</em> type, a type of the host language that
+will represent values of the information type. This representation function is
+host/implementation-specific, see the documentation of the binding you use.</p>
 
-<p>A builtin type starts with a dot and is then denoted by the name of a Ruby
-class. E.g.</p>
+<pre>Rep(QType) -> HostType</pre>
 
-<div class="highlight highlight-ruby"><pre><span class="o">.</span><span class="n">Integer</span>  <span class="c1"># The set of values captured by Ruby's Integer class</span>
+<h2 id="builtin-types">Builtin types</h2>
+
+<p>A builtin type starts with a dot followed by the name of an abstraction in
+the host language, a Ruby class for instance. The set of values captured by the
+<em>Q</em> type is defined the same set as the host abstraction. For instance,</p>
+
+<div class="highlight highlight-ruby"><pre><span class="o">.</span><span class="n">Integer</span>  <span class="c1"># The set of values captured by the Integer class</span>
 </pre></div>
 
-<p>Importing Q/builtins automatically defines type aliases for most ruby classes.
-The dot notation can thus be avoided for them all. We make the assumption that
-builtins are imported in the rest of this document and use the same class
-names while getting rid of the dot.</p>
+<p>To avoid builtins being spread everywhere, it is usual to define type
+aliases and build higher-level types with those aliases instead. This also
+provides a better host language independence and interoperability. For
+instance, the so-called <em>default system</em> in Qrb includes the following
+definitions:</p>
 
-<h2 id="sub-types">
-<a name="sub-types" class="anchor" href="#sub-types"><span class="octicon octicon-link"></span></a>Sub types</h2>
+<div class="highlight highlight-ruby"><pre><span class="no">Integer</span> <span class="o">=</span> <span class="o">.</span><span class="n">Integer</span>
+<span class="no">Nil</span>     <span class="o">=</span> <span class="o">.</span><span class="n">NilClass</span>
+</pre></div>
+
+<h2 id="sub-types">Sub types</h2>
 
 <p>Sub types are subsets of values. Q uses so-called 'specialization by
 constraint' to define sub types. E.g., the set of positive integers can be
 defined as follows:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="no">Posint</span> <span class="o">=</span> <span class="nb">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span>
+<div class="highlight highlight-ruby"><pre><span class="no">Posint</span> <span class="o">=</span> <span class="no">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span>
 </pre></div>
 
 <p>Multiple constraints can be distinguished by name:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="no">Evens</span> <span class="o">=</span> <span class="nb">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="ss">positive</span><span class="p">:</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="ss">even</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
+<div class="highlight highlight-ruby"><pre><span class="no">Evens</span> <span class="o">=</span> <span class="no">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="ss">positive</span><span class="p">:</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="ss">even</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
 </pre></div>
 
 <p>All types can be sub-typed through constraints. In addition, Q uses structural
@@ -223,11 +231,10 @@ type equivalence, which means that the type captured by the definition of
 <div class="highlight highlight-ruby"><pre><span class="no">Evens</span> <span class="o">=</span> <span class="no">PosInt</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
 </pre></div>
 
-<h2 id="union-types">
-<a name="union-types" class="anchor" href="#union-types"><span class="octicon octicon-link"></span></a>Union types</h2>
+<h2 id="union-types">Union types</h2>
 
 <p>In some respect, union types are the dual of subtypes. They allow defining new
-types by generalization, through the union of the set of values captured by
+types by generalization, through the union of the sets of values defined by
 other types. For instance, the missing Boolean type of ruby is simply captured
 as:</p>
 
@@ -236,13 +243,12 @@ as:</p>
 
 <p>Union types are also very useful for capturing possibly missing information
 (aka NULL/nil). For instance, the following type will capture either an
-integer, or nil (note that <code>Nil = .NilClass</code>).</p>
+integer, or nil:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="no">MaybeInt</span> <span class="o">=</span> <span class="nb">Integer</span><span class="o">|</span><span class="no">Nil</span>
+<div class="highlight highlight-ruby"><pre><span class="no">MaybeInt</span> <span class="o">=</span> <span class="no">Integer</span><span class="o">|</span><span class="no">Nil</span>
 </pre></div>
 
-<h2 id="seq-types">
-<a name="seq-types" class="anchor" href="#seq-types"><span class="octicon octicon-link"></span></a>Seq types</h2>
+<h2 id="seq-types">Seq types</h2>
 
 <p>Capturing sequences (aka arrays) of values is straightforward. Sequences are
 ordered and may contain duplicates:</p>
@@ -250,46 +256,42 @@ ordered and may contain duplicates:</p>
 <div class="highlight highlight-ruby"><pre><span class="no">Measures</span> <span class="o">=</span> <span class="o">[</span><span class="no">Posint</span><span class="o">]</span>
 </pre></div>
 
-<h2 id="set-types">
-<a name="set-types" class="anchor" href="#set-types"><span class="octicon octicon-link"></span></a>Set types</h2>
+<h2 id="set-types">Set types</h2>
 
 <p>Capturing sets of values is straightforward too. Set are unordered and may not
 contain duplicates:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="no">Hobbies</span> <span class="o">=</span> <span class="p">{</span><span class="nb">String</span><span class="p">}</span>
+<div class="highlight highlight-ruby"><pre><span class="no">Hobbies</span> <span class="o">=</span> <span class="p">{</span><span class="no">String</span><span class="p">}</span>
 </pre></div>
 
-<h2 id="tuple-types">
-<a name="tuple-types" class="anchor" href="#tuple-types"><span class="octicon octicon-link"></span></a>Tuple types</h2>
+<h2 id="tuple-types">Tuple types</h2>
 
 <p>Tuples capture information facts. Their 'structure' is called <em>heading</em> and is
 fixed and known in advance. All attributes are mandatory:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="no">ProgrammingLanguage</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}</span>
+<div class="highlight highlight-ruby"><pre><span class="no">ProgrammingLanguage</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">name</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}</span>
 </pre></div>
 
-<h2 id="relation-types">
-<a name="relation-types" class="anchor" href="#relation-types"><span class="octicon octicon-link"></span></a>Relation types</h2>
+<h2 id="relation-types">Relation types</h2>
 
 <p>Relations are sets of tuples, all of same heading. The notation for defining
 relation types naturally follows:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="no">Languages</span> <span class="o">=</span> <span class="p">{{</span> <span class="nb">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}}</span>
+<div class="highlight highlight-ruby"><pre><span class="no">Languages</span> <span class="o">=</span> <span class="p">{{</span> <span class="ss">name</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}}</span>
 </pre></div>
 
 <p>Relation types and their syntax are first-class in Q, most notably because
 of the availability of relational algebra for them, unlike pure sets of
 tuples.</p>
 
-<p>Note that relations do not allow duplicates and have no significant ordering
-of their tuples. If the ordering is significant for you, want should consider
+<p>Note that relations do not allow duplicates and have no significant
+ordering of their tuples. If the ordering is significant, you should consider
 a sequence of tuples instead:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="no">Preferences</span> <span class="o">=</span> <span class="o">[</span><span class="p">{</span> <span class="ss">lang</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">reason</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span><span class="o">]</span>
+<div class="highlight highlight-ruby"><pre><span class="no">Preferences</span> <span class="o">=</span> <span class="o">[</span><span class="p">{</span> <span class="ss">lang</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">reason</span><span class="p">:</span> <span class="no">String</span> <span class="p">}</span><span class="o">]</span>
 </pre></div>
 
-<h2 id="abstract-data-types">
-<a name="abstract-data-types" class="anchor" href="#abstract-data-types"><span class="octicon octicon-link"></span></a>Abstract Data types</h2>
+<h2 id="abstract-data-types">Abstract Data types</h2>
 
 <p>Abstract data types, also called user-defined types, provide the way to
 define higher level abstractions easily and to optionally connect them to
@@ -297,7 +299,7 @@ types of the host language (e.g. a ruby class). For instance, a
 <code>Color</code> abstraction can be defined as follows:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">},</span>
-        <span class="o">&lt;</span><span class="n">hex</span><span class="o">&gt;</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/^#[0-9a-f]{6}$/i</span> <span class="p">)</span>
+        <span class="o">&lt;</span><span class="n">hex</span><span class="o">&gt;</span> <span class="no">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/^#[0-9a-f]{6}$/i</span> <span class="p">)</span>
 </pre></div>
 
 <p>The Color definition above shows that a color can be represented either by
@@ -332,17 +334,17 @@ builtin type and two explicit converters, called the <em>dresser</em> and the
 <code>hex</code> one is defined in a similar way)</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
-          <span class="p">\(</span> <span class="n">tuple</span> <span class="o">|</span> <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="p">)</span>
-          <span class="p">\(</span> <span class="n">color</span> <span class="o">|</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">b</span><span class="p">}</span> <span class="p">)</span>
+                     <span class="p">\(</span> <span class="n">tuple</span> <span class="o">|</span> <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="p">)</span>
+                     <span class="p">\(</span> <span class="n">color</span> <span class="o">|</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">b</span><span class="p">}</span> <span class="p">)</span>
 </pre></div>
 
 <p>The converters provide load/dump code to convert from information types to
 the code abstraction and vice versa, thereby complementing a representation
-with an information contract. A binding of <em>Q</em>, e.g. Qrb, guarantees
-that the dresser will only be executed on valid representations of the
-corresponding information type. As the dresser tends to be exposed to an
-unsafe world, however, it should always be kept <em>pure and safe</em> (no
-side effect, no metaprogramming, no code evaluation, etc.).</p>
+with a so-called <em>information contract</em>. A binding of <em>Q</em>, e.g.
+Qrb, guarantees that the dresser will only be executed on valid
+representations of the corresponding information type. As the dresser tends to
+be exposed to an unsafe world, however, it should always be kept <em>pure and
+safe</em> (no side effect, no metaprogramming, no code evaluation, etc.).</p>
 
 <h3 id="adt-and-host-contracts">
 <a name="adt-and-host-contracts" class="anchor" href="#adt-and-host"><span class="octicon octicon-link"></span></a>Host ADT protocols</h3>
@@ -363,7 +365,7 @@ class itself, as one would probably do it, e.g. for testing purpose.</p>
   <span class="kp">attr_reader</span> <span class="ss">:r</span><span class="p">,</span> <span class="ss">:g</span><span class="p">,</span> <span class="ss">:b</span>
 
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">rgb</span><span class="p">(</span><span class="n">tuple</span><span class="p">)</span>
-    <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+    <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">[</span><span class="ss">:r</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:g</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">to_rgb</span>
@@ -380,6 +382,157 @@ methods:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
 </pre></div>
+
+<p>The mechanism described here for abstract data types is actually more
+general and applies to most of <em>Q</em>'s work. The next section describes
+information contracts in more details.</p>
+
+<h1 id="information-contracts">Information Contracts</h1>
+
+<p><em>Q</em> tries very hard not to be <em>yet another data language</em>. In
+particular, it aims at integrating as smoothly as possible with existing
+technologies, in particular with programming languages and data exchange
+formats (e.g. JSON or YAML).</p>
+
+<p>This interoperability is handled through so-called <em>information
+contracts</em>. In some respect, information contracts are the dual of
+axiomatic contracts, i.e. the dual of public behavioral APIs of software
+abstractions.</p>
+
+<p class="img"><img src="/img/contracts.png"/></p>
+
+<p>For a given software abstraction, say a <code>Color</code>:</p>
+
+<ul>
+<li>The <em>axiomatic</em> contract hides the internal representation in favor
+of a set of public behavioral methods to manipulate the abstraction (e.g.
+darkening and brightening the color),</li>
+<li>The <em>information</em> contract hides the internal representation in
+favor of a set of public information representations of the abstraction (e.g.
+a RGB triple, an hexadecimal string).</li>
+</ul>
+
+<p>The data types involved in the definitions of the information contracts are
+called <em>information types</em>, e.g. <code>{r: Byte, g: Byte, b:
+Byte}</code> (a <a href="#tuple-types">tuple type</a>). <em>Q</em> provides a
+<a href="#type-system">rich type system</a> dedicated at capturing those data
+types precisely, mostly because type systems of main stream programming
+languages fail at providing an good support for them.</p>
+
+<h2 id="dressing-undressing">Dressing &amp; Undressing</h2>
+
+<p>In a more precise way, an information contract is actually a set of
+functions pairs, such as:</p>
+
+<div class="row">
+<div class="col-md-6">
+<div class="highlight highlight-ruby"><pre><span class="c1"># RGB information contract</span>
+<span class="n">dress</span>   <span class="o">::</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span><span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="no">Color</span>
+<span class="n">undress</span> <span class="o">::</span> <span class="no">Color</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span><span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="col-md-6">
+<div class="highlight highlight-ruby"><pre>
+<span class="c1"># HEX information contract</span>
+<span class="n">dress</span>   <span class="o">::</span> <span class="no">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/#[a-z0-9]{6}/</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="no">Color</span>
+<span class="n">undress</span> <span class="o">::</span> <span class="no">Color</span> <span class="o">-&gt;</span> <span class="no">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/#[a-z0-9]{6}/</span> <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+<p>In other words, each public data representation of an abstraction comes
+with two (pure) functions that allow <em>dressing</em> the corresponding
+information type with the abstraction behavior, and <em>undressing</em> the latter
+the other way round.</p>
+
+<p>If information contracts are best explained through abstract data types
+such as Color, the dress/undress principle is more general. It also allows
+explaining the interoperability of data exchange and programming languages.
+For instance, the interoperability with JSON could easily be explained as
+follows</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">JSNumber</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="p">)</span>
+<span class="nb">Integer</span>  <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSNumber</span> <span class="p">\(</span> <span class="n">s</span> <span class="o">|</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="p">)</span> <span class="p">\(</span> <span class="n">i</span> <span class="o">|</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="p">)</span>
+</pre></div>
+
+<p>This definition naturally defines the following information contract:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">dress</span>   <span class="o">::</span> <span class="no">JSNumber</span> <span class="o">-&gt;</span> <span class="no">Integer</span>
+<span class="n">undress</span> <span class="o">::</span> <span class="no">Integer</span> <span class="o">-&gt;</span> <span class="no">JSNumber</span>
+</pre></div>
+
+<p>The actual parsing/unparsing of JSON from/to text is generally done by
+dedicated third-party libraries, of course. The example only aims at showing
+that information contracts are a very general concept, that <em>explains</em>
+what is actually going on in practice.</p>
+
+<h2 id="interoperability">Data Interoperability</h2>
+
+<p>According to the host programming language, however, the interoperability
+with exchange formats such as JSON is more of less complete. In ruby, for
+instance, the interoperability is already pretty good. It can be explained as
+follows:</p>
+
+<div class="highlight highlight-ruby"><pre>
+<span class="no">RbBoolean</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSBoolean</span>
+<span class="no">RbString</span>  <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSString</span>
+<span class="no">RbNumeric</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSNumber</span>
+<span class="no">RbHash</span>    <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSObject</span>
+<span class="no">RbArray</span>   <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSArray</span>
+<span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</pre></div>
+
+<p>Such a mechanism is already builtin in ruby standard library, and explains
+why working with JSON data is rather natural in Ruby (because ruby classes at
+left above are first-class citizen for ruby programmers). Among others, this
+allows Qrb to be kept simple, and work with the ruby type system only,
+delegating the interoperability with JSON to the usual parsing library. More
+work might be needed for other programming languages.</p>
+
+<p>Observe, however, that Ruby/JSON interoperability is straightforward but
+actually biased towards JSON. The developer has absolutely no way of stating
+that some value must be a ruby <code>Integer</code>, since the JSON
+specification does not distinguish between integers from reals. One aim with
+<em>Q</em> and its type system is to provide a way for developers to fix this,
+by also being able to specify more specific information contracts and have
+full control of them. In the example, one would like to express an information
+contract like the following one:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">RbInteger</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSNumber</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/^[1-9][0-9]*$/</span> <span class="p">)</span>
+</pre></div>
+
+<h2 id="contracts-in-action">Contracts in Action</h2>
+
+<p>Dressing and undressing generally applies recursively, e.g. when involving
+collection and abstract data types. This provides the real ability of
+<em>Q</em> to dress and undress complex data involving many information
+contracts and many abstractions.</p>
+
+<p>Consider the following Q system, i.e. for dressing sequences of tuples
+having a name attribute restricted to simple words:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Word</span> <span class="o">=</span> <span class="o">.</span><span class="n">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/^[a-z]+$/</span> <span class="p">)</span>
+<span class="o">[</span><span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="no">Word</span> <span class="p">}</span><span class="o">]</span>
+</pre></div>
+
+<p>Dressing JSON data with Qrb, for instance, involves the following contracts:</p>
+
+<ul>
+  <li>Dressing <code>JSString</code> to ruby <code>String</code> (by the standard library)</li>
+  <li>Dressing ruby <code>String</code> to <code>Word</code> (by Qrb, returning a ruby String)</li>
+  <li>Dressing ruby <code>Hash</code> to <code>Tuple</code> (by Qrb, returning a ruby Struct)</li>
+  <li>Dressing ruby <code>Array</code> to <code>Seq</code> (by Qrb, returning a ruby Array)</li>
+</ul>
+
+<p>The concrete dressing result is implementation-dependent, as it involves
+the definition of the representation function <code>Rep</code> mentionned <a
+href="#type-system">previously</a>. The aim is not to define new host
+abstractions, e.g. classes, for every <em>Q</em> type defined in a system but
+rather to check that values <em>conform</em> to <em>Q</em> types and choose
+an idiomatic representation in the host language (see the parentheses).
+However, all those information contracts are actually involved in the dressing
+process and provide as many places to validate and coerce data in practice.</p>
+
 </div>
 
 <div class="col-md-2">
@@ -389,21 +542,13 @@ methods:</p>
       <a href="#q"><em>Q</em> &mdash; A Data Language</a>
       <ul class="nav">
         <li>
-          <a href="#example">Example</a>
+          <a href="#examples">Examples</a>
         </li>
         <li>
           <a href="#use-cases">Use cases</a>
         </li>
         <li>
           <a href="#implementations">Implementations</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href="#information-contracts">Information Contracts</a>
-      <ul class="nav">
-        <li>
-          <a href="#dressing-undressing">Dressing/Undressing</a>
         </li>
       </ul>
     </li>
@@ -420,8 +565,22 @@ methods:</p>
         <li><a href="#abstract-data-types">ADTs</a></li>
       </ul>
     </li>
+    <li>
+      <a href="#information-contracts">Information Contracts</a>
+      <ul class="nav">
+        <li>
+          <a href="#dressing-undressing">Dressing/Undressing</a>
+        </li>
+        <li>
+          <a href="#interoperability">Data Interoperability</a>
+        </li>
+        <li>
+          <a href="#contracts-in-action">Contracts in Action</a>
+        </li>
+      </ul>
+    </li>
   </ul>
 </div>
-
 </div>
+
 </div>
