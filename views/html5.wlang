@@ -19,8 +19,10 @@
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-48508479-1', 'q-lang.herokuapp.com');
+
+  ga('create', 'UA-48508479-2', 'q-lang.io');
   ga('send', 'pageview');
+
 </script>
 <div class="container">
 >{yield}
