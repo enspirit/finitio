@@ -121,7 +121,7 @@ connects a <a href="#tuple-types">tuple type</a> to a <code>Measure</code> class
 </div>
 </div>
 
-<p>In Qrb for instance, the ruby binding of <em>Q</em>, loading and dressing
+<p>In Qrb for instance, the Ruby binding of <em>Q</em>, loading and dressing
 the JSON data above correctly returns an <code>Array</code> of <code>Measure</code>
 instances. Dates are automatically coerced too:</p>
 
@@ -187,7 +187,7 @@ and <code>integer</code>, but rather to provide an abstract way of building
 <p>For this, a <em>Q</em> implementation has to define a representation
 function that maps, for each <em>Q</em> type, a type of the host language that
 will represent values of the information type. This representation function is
-host/implementation-specific, see the documentation of the binding you use.</p>
+host/implementation-specific; see the documentation of the binding you use.</p>
 
 <pre>Rep(QType) -> HostType</pre>
 
@@ -202,7 +202,7 @@ the host language, a Ruby class for instance. The set of values captured by the
 
 <p>To avoid builtins being spread everywhere, it is usual to define type
 aliases and build higher-level types with those aliases instead. This also
-provides a better host language independence and interoperability. For
+provides better host-language independence and interoperability. For
 instance, the so-called <em>default system</em> in Qrb includes the following
 definitions:</p>
 
@@ -235,7 +235,7 @@ type equivalence, which means that the type captured by the definition of
 
 <p>In some respect, union types are the dual of subtypes. They allow defining new
 types by generalization, through the union of the sets of values defined by
-other types. For instance, the missing Boolean type of ruby is simply captured
+other types. For instance, the missing Boolean type of Ruby is simply captured
 as:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Boolean</span> <span class="o">=</span> <span class="o">.</span><span class="n">TrueClass</span><span class="o">|.</span><span class="n">FalseClass</span>
@@ -243,7 +243,7 @@ as:</p>
 
 <p>Union types are also very useful for capturing possibly missing information
 (aka NULL/nil). For instance, the following type will capture either an
-integer, or nil:</p>
+integer or nil:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">MaybeInt</span> <span class="o">=</span> <span class="no">Integer</span><span class="o">|</span><span class="no">Nil</span>
 </pre></div>
@@ -274,7 +274,7 @@ fixed and known in advance. All attributes are mandatory:</p>
 
 <h2 id="relation-types">Relation types</h2>
 
-<p>Relations are sets of tuples, all of same heading. The notation for defining
+<p>Relations are sets of tuples, all of which have the same heading. The notation for defining
 relation types naturally follows:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Languages</span> <span class="o">=</span> <span class="p">{{</span> <span class="ss">name</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}}</span>
@@ -295,7 +295,7 @@ a sequence of tuples instead:</p>
 
 <p>Abstract data types, also called user-defined types, provide the way to
 define higher level abstractions easily and to optionally connect them to
-types of the host language (e.g. a ruby class). For instance, a
+types of the host language (e.g. a Ruby class). For instance, a
 <code>Color</code> abstraction can be defined as follows:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">},</span>
@@ -313,8 +313,8 @@ representations</strong> of the Color abstraction.</p>
 <p>Defined as above, the type will behave as a union type, i.e. it will let
 pass valid RGB triples and hexadecimal strings. Now, representations can be
 complemented to connect the Color abstraction to a host language type, e.g. a
-Color ruby class, and raise the level of discourse on the programming side.
-This amounts at providing one information contract per representation.</p>
+Color Ruby class, and raise the level of discourse on the programming side.
+This amounts to providing one information contract per representation.</p>
 
 <p>Suppose for example that the following <code>Color</code> class has been defined:</p>
 
@@ -330,7 +330,7 @@ This amounts at providing one information contract per representation.</p>
 
 <p>Connecting our information ADT to this Color class can be done through a
 builtin type and two explicit converters, called the <em>dresser</em> and the
-<em>undresser</em>: (We only show the <code>rgb</code> case here, the
+<em>undresser</em>: (We only show the <code>rgb</code> case here; the
 <code>hex</code> one is defined in a similar way)</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
@@ -344,7 +344,7 @@ with a so-called <em>information contract</em>. A binding of <em>Q</em>, e.g.
 Qrb, guarantees that the dresser will only be executed on valid
 representations of the corresponding information type. As the dresser tends to
 be exposed to an unsafe world, however, it should always be kept <em>pure and
-safe</em> (no side effect, no metaprogramming, no code evaluation, etc.).</p>
+safe</em> (no side effects, no metaprogramming, no code evaluation, etc.).</p>
 
 <h3 id="adt-and-host-contracts">
 <a name="adt-and-host-contracts" class="anchor" href="#adt-and-host"><span class="octicon octicon-link"></span></a>Host ADT protocols</h3>
@@ -353,7 +353,7 @@ safe</em> (no side effect, no metaprogramming, no code evaluation, etc.).</p>
 may provide conventions-over-configuration protocols for automating
 information contracts.</p>
 
-<p>For instance, Qrb provides a more idiomatic way of connecting ruby classes
+<p>For instance, Qrb provides a more idiomatic way of connecting Ruby classes
 to information types. The information contracts may indeed be moved to the
 class itself, as one would probably do it, e.g. for testing purpose.</p>
 
@@ -416,13 +416,13 @@ a RGB triple, an hexadecimal string).</li>
 called <em>information types</em>, e.g. <code>{r: Byte, g: Byte, b:
 Byte}</code> (a <a href="#tuple-types">tuple type</a>). <em>Q</em> provides a
 <a href="#type-system">rich type system</a> dedicated at capturing those data
-types precisely, mostly because type systems of main stream programming
+types precisely, mostly because type systems of mainstream programming
 languages fail at providing an good support for them.</p>
 
 <h2 id="dressing-undressing">Dressing &amp; Undressing</h2>
 
 <p>In a more precise way, an information contract is actually a set of
-functions pairs, such as:</p>
+function pairs, such as:</p>
 
 <div class="row">
 <div class="col-md-6">
@@ -449,7 +449,7 @@ the other way round.</p>
 such as Color, the dress/undress principle is more general. It also allows
 explaining the interoperability of data exchange and programming languages.
 For instance, the interoperability with JSON could easily be explained as
-follows</p>
+follows:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">JSNumber</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="p">)</span>
 <span class="nb">Integer</span>  <span class="o">=</span> <span class="o">&lt;</span><span class="n">json</span><span class="o">&gt;</span> <span class="no">JSNumber</span> <span class="p">\(</span> <span class="n">s</span> <span class="o">|</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="p">)</span> <span class="p">\(</span> <span class="n">i</span> <span class="o">|</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span> <span class="p">)</span>
@@ -469,7 +469,7 @@ what is actually going on in practice.</p>
 <h2 id="interoperability">Data Interoperability</h2>
 
 <p>According to the host programming language, however, the interoperability
-with exchange formats such as JSON is more of less complete. In ruby, for
+with exchange formats such as JSON is more of less complete. In Ruby, for
 instance, the interoperability is already pretty good. It can be explained as
 follows:</p>
 
@@ -482,16 +482,16 @@ follows:</p>
 <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 </pre></div>
 
-<p>Such a mechanism is already builtin in ruby standard library, and explains
-why working with JSON data is rather natural in Ruby (because ruby classes at
-left above are first-class citizen for ruby programmers). Among others, this
-allows Qrb to be kept simple, and work with the ruby type system only,
+<p>Such a mechanism is already built into the Ruby standard library, and explains
+why working with JSON data is rather natural in Ruby (because Ruby classes at
+left above are first-class citizen for Ruby programmers). Among others, this
+allows Qrb to be kept simple, and work with the Ruby type system only,
 delegating the interoperability with JSON to the usual parsing library. More
 work might be needed for other programming languages.</p>
 
 <p>Observe, however, that Ruby/JSON interoperability is straightforward but
 actually biased towards JSON. The developer has absolutely no way of stating
-that some value must be a ruby <code>Integer</code>, since the JSON
+that some value must be a Ruby <code>Integer</code>, since the JSON
 specification does not distinguish between integers from reals. One aim with
 <em>Q</em> and its type system is to provide a way for developers to fix this,
 by also being able to specify more specific information contracts and have
@@ -518,10 +518,10 @@ having a name attribute restricted to simple words:</p>
 <p>Dressing JSON data with Qrb, for instance, involves the following contracts:</p>
 
 <ul>
-  <li>Dressing <code>JSString</code> to ruby <code>String</code> (by the standard library)</li>
-  <li>Dressing ruby <code>String</code> to <code>Word</code> (by Qrb, returning a ruby String)</li>
-  <li>Dressing ruby <code>Hash</code> to <code>Tuple</code> (by Qrb, returning a ruby Struct)</li>
-  <li>Dressing ruby <code>Array</code> to <code>Seq</code> (by Qrb, returning a ruby Array)</li>
+  <li>Dressing <code>JSString</code> to Ruby <code>String</code> (by the standard library)</li>
+  <li>Dressing Ruby <code>String</code> to <code>Word</code> (by Qrb, returning a Ruby String)</li>
+  <li>Dressing Ruby <code>Hash</code> to <code>Tuple</code> (by Qrb, returning a Ruby Struct)</li>
+  <li>Dressing Ruby <code>Array</code> to <code>Seq</code> (by Qrb, returning a Ruby Array)</li>
 </ul>
 
 <p>The concrete dressing result is implementation-dependent, as it involves
