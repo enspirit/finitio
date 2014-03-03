@@ -44,7 +44,7 @@ nav li {
 }
 .menu {
   position: fixed;
-  top: 80px;
+  top: 40px;
   font-size: 16px;
 }
 .menu ul ul {
