@@ -4,6 +4,7 @@ task :snippets do
   require 'path'
   (Path.dir/'snippets').glob('**/*.md') do |page|
     target = page.sub_ext('.html')
+    next if target.exists?
     data = {
       "text" => page.read,
       "mode" => "markdown",
