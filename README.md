@@ -16,7 +16,7 @@ interoperability with programming and data exchange languages.
 
 ## License
 
-&copy; 2014 &mash; The University of Louvain
+&copy; 2014 &mdash; The University of Louvain
 
 The specification and documentation of *Q* is distributed under a under a <a
 rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
