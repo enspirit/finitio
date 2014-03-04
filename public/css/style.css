@@ -82,4 +82,9 @@ pre {
 }
 @media screen and (max-width: 960px) {
   .menu{ display: none; }
+  #github-ribbon { display: none }
+}
+@media print {
+  .menu { display: none; }
+  #github-ribbon { display: none }
 }
