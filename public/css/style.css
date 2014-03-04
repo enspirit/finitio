@@ -76,9 +76,17 @@ pre {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-.container img {
+.container .img img {
   width: 60%;
   margin: auto;
+}
+footer {
+  margin-top: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 1px solid #333333;
+  text-align: center;
+  font-size: 80%;
 }
 @media screen and (max-width: 960px) {
   .menu{ display: none; }
