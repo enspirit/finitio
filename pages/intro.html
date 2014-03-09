@@ -191,6 +191,16 @@ host/implementation-specific; see the documentation of the binding you use.</p>
 
 <pre>Rep(QType) -> HostType</pre>
 
+<h2 id="any-types">Any type</h2>
+
+<p>Any type captures the set of all possible 'values' representable in the
+host language. It is mostly provided for the sake of completeness and some
+implementation needs by specific bindings. It is occasionally useful in
+"don't care" situations too. Any is captured with a single dot:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Any</span> <span class="o">=</span> <span class="o">.</span>
+</pre></div>
+
 <h2 id="builtin-types">Builtin types</h2>
 
 <p>A builtin type starts with a dot followed by the name of an abstraction in
@@ -346,12 +356,12 @@ representations of the corresponding information type. As the dresser tends to
 be exposed to an unsafe world, however, it should always be kept <em>pure and
 safe</em> (no side effects, no metaprogramming, no code evaluation, etc.).</p>
 
-<h3 id="adt-and-host-contracts">
-<a name="adt-and-host-contracts" class="anchor" href="#adt-and-host"><span class="octicon octicon-link"></span></a>Host ADT protocols</h3>
-
 <p>In order to keep <em>Q</em> schemas as clean as possible, implementations
 may provide conventions-over-configuration protocols for automating
-information contracts.</p>
+information contracts. Bindings typically come with so-called 'internal' and
+'external' ADT protocols.</p>
+
+<h3>Internal ADT protocol</h3>
 
 <p>For instance, Qrb provides a more idiomatic way of connecting Ruby classes
 to information types. The information contracts may indeed be moved to the
@@ -381,6 +391,36 @@ will use the <code>Color.rgb(...)</code> and <code>Color#to_rgb</code>
 methods:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
+</pre></div>
+
+<h3>External ADT protocol</h3>
+
+<p>Sometimes, relying on methods provided by the abstraction itself is
+impossible or not wanted (e.g. because it would lead to core extensions
+considered intrusive). For this reason, <em>Q</em> bindings may also support
+so called 'external' protocols.</p>
+
+<p>Support for example that the <code>rgb</code> information contract is not
+provided by the <code>Color</code> class itself and that it's not possible
+to implement it there. Qrb also allows the developer to define the contract
+methods in a specific module/class:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">module</span> <span class="nn">RgbContract</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">dress</span><span class="p">(</span><span class="n">tuple</span><span class="p">)</span>
+    <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">[</span><span class="ss">:r</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:g</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">undress</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="p">{</span> <span class="ss">r</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">b</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</pre></div>
+
+<p>Then, in Q, the external contract can be specified as follows:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span> <span class="o">.</span><span class="n">RgbContract</span>
 </pre></div>
 
 <p>The mechanism described here for abstract data types is actually more
@@ -559,6 +599,7 @@ process and provide as many places to validate and coerce data in practice.</p>
     <li>
       <a href="#type-system">Type System</a>
       <ul class="nav">
+        <li><a href="#any-types">Any</a></li>
         <li><a href="#builtin-types">Builtins</a></li>
         <li><a href="#sub-types">Subtypes</a></li>
         <li><a href="#union-types">Unions</a></li>
