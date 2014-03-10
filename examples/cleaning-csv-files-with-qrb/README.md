@@ -87,7 +87,7 @@ end
 
 Example output:
 
-```ruby
+```
 {:id=>1, :name=>"Aaron", :birthdate=>#<Date: 2013-10-28 ((2456594j,0s,0n),+0s,2299161j)>, :score=>5}
 Skipping `2,Courtney,2013-26-08,5`: Invalid value `2013-26-08` for Date
 {:id=>3, :name=>"Connor", :birthdate=>#<Date: 2014-10-11 ((2456942j,0s,0n),+0s,2299161j)>, :score=>8}
