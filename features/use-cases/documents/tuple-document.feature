@@ -1,4 +1,4 @@
-Feature: Using Q to define a single-tuple document
+Feature: Using Finitio to define a single-tuple document
 
   Background:
 

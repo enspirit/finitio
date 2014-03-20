@@ -1,4 +1,4 @@
-Feature: Validating against Q scalars
+Feature: Validating against Finitio scalars
 
   Background:
 

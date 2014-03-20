@@ -10,12 +10,12 @@ Feature: RelationType
 
   Scenario: Dressing a valid tuple
 
-    Given I dress JSON's '[{ "name": "Q", "age": 1 }]' with Info
+    Given I dress JSON's '[{ "name": "Finitio", "age": 1 }]' with Info
     Then the result should be a representation for Info
 
   Scenario: Dressing when an invalid tuple
 
-    Given I dress JSON's '[{ "name": "Q" }]' with Info
+    Given I dress JSON's '[{ "name": "Finitio" }]' with Info
     Then it should be a TypeError as:
       | message                 | location |
       | Missing attribute `age` | 0        |
@@ -24,8 +24,8 @@ Feature: RelationType
 
     Given I dress the following JSON document with Info:
       """
-      [{ "name": "Q", "age": 1 },
-       { "name": "Q", "age": 1 }]
+      [{ "name": "Finitio", "age": 1 },
+       { "name": "Finitio", "age": 1 }]
       """
     Then it should be a TypeError as:
       | message         | location |

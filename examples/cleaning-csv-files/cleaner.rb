@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-require 'qrb'
+require 'finitio'
 require 'csv'
 
-# Let load the Q schema
-schema = Qrb.parse(File.read('schema.q'))
+# Let load the schema
+schema = Finitio.parse(File.read('schema.fio'))
 
 # For each CSV row
 File.open('data.csv', 'r') do |io|
@@ -15,7 +15,7 @@ File.open('data.csv', 'r') do |io|
     # values. On error display it with the error message on STDERR
     begin
       puts schema.dress(tuple).inspect
-    rescue Qrb::TypeError => ex
+    rescue Finitio::TypeError => ex
       puts "Skipping `#{row.to_s.strip}`: #{ex.message}"
     end
 

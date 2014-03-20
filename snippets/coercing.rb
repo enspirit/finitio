@@ -1,4 +1,4 @@
-require 'qrb'
+require 'finitio'
 require 'time'
 require 'json'
 
@@ -28,13 +28,13 @@ class Measure
   end
 end
 
-schema = <<-Q
+schema = <<-FIO
 Measure = .Measure <info> {
   where: String,
   at: Date,
   temperature: Float( f | f >= -40.0 and f <= 50.0 )
 }
 [Measure]
-Q
+FIO
 
-puts Qrb::DEFAULT_SYSTEM.parse(schema).dress(::JSON.parse(data)).inspect
+puts Finitio::DEFAULT_SYSTEM.parse(schema).dress(::JSON.parse(data)).inspect

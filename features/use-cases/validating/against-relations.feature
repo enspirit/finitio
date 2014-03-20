@@ -1,4 +1,4 @@
-Feature: Validating against Q relations
+Feature: Validating against Finitio relations
 
 Background:
 

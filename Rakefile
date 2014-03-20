@@ -8,7 +8,7 @@ task :snippets do
     data = {
       "text" => page.read,
       "mode" => "markdown",
-      "context" => "blambeau/qrb"
+      "context" => "blambeau/finitio"
     }
     res = RestClient.post "https://api.github.com/markdown",
                           data.to_json,

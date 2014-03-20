@@ -1,4 +1,4 @@
-# Cleaning .csv files the easy way using Q(rb)
+# Cleaning .csv files the easy way using Finitio(-rb)
 
 As a database and software consultant I frequently face the requirement of
 cleaning and migrating legacy data to a new database structure. Such data
@@ -30,9 +30,9 @@ Given that,
 * The `score` field is required and supposed to be between 0 and 10. In
   practice it is sometimes missing or bigger than 10 (see rows 4 and 6).
 
-## Q schema at the rescue
+## Finition schema at the rescue
 
-Let write a Q schema that will coerce the data and detect invalid values.
+Let write a schema that will coerce the data and detect invalid values.
 
 ```ruby
 # String is an alias for Ruby's String
@@ -56,16 +56,16 @@ Score = Integer( i | valid: i >= 0 and i <= 10 )
 }
 ```
 
-## Making the split using Qrb
+## Making the split using Finitio(-rb)
 
 Here we go! Dress each CSV line using the schema, rescue on a type error:
 
 ```ruby
-require 'qrb'
+require 'finitio'
 require 'csv'
 
-# Let load the Q schema
-schema = Qrb.parse(File.read('schema.q'))
+# Let load the schema
+schema = Finitio.parse(File.read('schema.fio'))
 
 # For each CSV row
 File.open('data.csv', 'r') do |io|
@@ -77,7 +77,7 @@ File.open('data.csv', 'r') do |io|
     # values. On error display it with the error message on STDERR
     begin
       puts schema.dress(tuple).inspect
-    rescue Qrb::TypeError => ex
+    rescue Finitio::TypeError => ex
       puts "Skipping `#{row.to_s.strip}`: #{ex.message}"
     end
 

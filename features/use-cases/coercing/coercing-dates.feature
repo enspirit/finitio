@@ -1,4 +1,4 @@
-Feature: Using Q to coerce input data have date attributes
+Feature: Using Finitio to coerce input data have date attributes
 
   Background:
 
@@ -14,7 +14,7 @@ Feature: Using Q to coerce input data have date attributes
 
     Given I dress the following JSON document:
       """
-      { "name": "Q", "at": "2014-03-01" }
+      { "name": "Finitio", "at": "2014-03-01" }
       """
 
     Then it should be a success

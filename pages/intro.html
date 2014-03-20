@@ -1,12 +1,12 @@
 <div class="row">
 
 <div class="col-md-10">
-<h1 id="q">Q</h1>
+<h1 id="finitio">Finitio</h1>
 
-<p><em>Q</em> is a data language. For now, it is limited to a data
-<em>definition</em> language (DDL). Think "JSON/XML schema", but the correct
-way. <em>Q</em> comes with a dedicated type system for defining data and a
-theory, called <em>information contracts</em>, for interoperability with
+<p><em>Finitio</em> is a data language. For now, it is limited to a data
+<em>definition</em> language (DDL). Think "JSON/XML schema", but the right
+way. <em>Finitio</em> comes with a dedicated type system for defining data and
+a theory, called <em>information contracts</em>, for interoperability with
 programming and data exchange languages.</p>
 
 <h2 id="examples">Examples</h2>
@@ -21,7 +21,7 @@ programming and data exchange languages.</p>
 <div class="tab-content">
   <div class="tab-pane active" id="validating">
 <p>Suppose we want to capture information about a medical diagnosis for some patient.
-At left, a typical digital document in JSON. At right, the corresponding <em>Q</em> schema.</p>
+At left, a typical digital document in JSON. At right, the corresponding <em>Finitio</em> schema.</p>
 
 <div class='row'>
 <div class="col-md-6">
@@ -54,7 +54,7 @@ At left, a typical digital document in JSON. At right, the corresponding <em>Q</
 </div>
 </div>
 
-<p>Suppose an invalid document comes in. With <em>Q</em>, you properly
+<p>Suppose an invalid document comes in. With <em>Finitio</em>, you properly
 validate input data and get friendly error messages.</p>
 
 <div class='row'>
@@ -86,7 +86,7 @@ validate input data and get friendly error messages.</p>
 <div class="tab-pane" id="coercing">
 
 <p>Data exchange languages, e.g. JSON, impose a very low data abstraction
-level: e.g. boolean, string &amp; numbers. <em>Q</em> helps raising the
+level: e.g. boolean, string &amp; numbers. <em>Finitio</em> helps raising the
 level of discourse while navigating up and down in abstraction levels
 with <a href="#information-contracts">information contracts</a>:</p>
 
@@ -115,13 +115,13 @@ with <a href="#information-contracts">information contracts</a>:</p>
 <span class="o">[</span><span class="no">Measure</span><span class="o">]</span>
 </pre></div>
 <p style="font-size: 90%;">Two information contracts here. An implicit one,
-<code>Date</code>, provided by <em>Q</em> itself (see <a
+<code>Date</code>, provided by <em>Finitio</em> itself (see <a
 href="#implementations">implementations</a>) and another one, <code>Measure</code> that
 connects a <a href="#tuple-types">tuple type</a> to a <code>Measure</code> class.</p>
 </div>
 </div>
 
-<p>In Qrb for instance, the Ruby binding of <em>Q</em>, loading and dressing
+<p>In Finitio-rb for instance, the Ruby binding of <em>Finitio</em>, loading and dressing
 the JSON data above correctly returns an <code>Array</code> of <code>Measure</code>
 instances. Dates are automatically coerced too:</p>
 
@@ -140,7 +140,7 @@ instances. Dates are automatically coerced too:</p>
 
 <h2 id="use-cases">Use cases</h2>
 
-<p><em>Q</em> can be used in many places where data is involved. In particular, it can be used for:</p>
+<p><em>Finitio</em> can be used in many places where data is involved. In particular, it can be used for:</p>
 
 <ul>
   <li><em>Enforcing</em> data types towards more robust and secure (RESTful)
@@ -160,22 +160,22 @@ instances. Dates are automatically coerced too:</p>
 <h2 id="implementations">Implementations</h2>
 
 Obviously the scenarios outlined in previous section require an
-implementation, or <em>binding</em> of <em>Q</em>, for the situation at hand.
+implementation, or <em>binding</em> of <em>Finitio</em>, for the situation at hand.
 The following projects provide those bindings so far (<a
 href="mailto:blambeau@gmail.com">contact us</a> or fork this page on github to
 add your own binding to this list!):
 
 <ul>
-  <li><a href="https://github.com/blambeau/qrb">Qrb</a> &mdash; <em>Q</em> in Ruby (data coercing &amp; validation)</li>
-  <li><a href="https://github.com/llambeau/qjs">Qjs</a> &mdash; <em>Q</em> in Javascript (under development)</li>
+  <li><a href="https://github.com/blambeau/finitio-rb">Finitio-rb</a> &mdash; <em>Finitio</em> in Ruby (data coercing &amp; validation)</li>
+  <li><a href="https://github.com/llambeau/finitio.js">Finitio-js</a> &mdash; <em>Finitio</em> in Javascript (under development)</li>
 </ul>
 
 <h1 id="type-system">Type System</h1>
 
-<p><em>Q</em>'s type system is different from those you can find in a
+<p><em>Finitio</em>'s type system is different from those you can find in a
 programming language. The aim here is to capture <em>information</em>, not
 software <em>behavior</em>. Therefore, the definition of <em>type</em>
-differs. In <em>Q</em>, a type is a set of values, a subtype is a subset, a
+differs. In <em>Finitio</em>, a type is a set of values, a subtype is a subset, a
 supertype is a superset. That's it.</p>
 
 <p>However, the aim here is <b>not</b> to define yet another type system with a
@@ -184,12 +184,12 @@ and <code>integer</code>, but rather to provide an abstract way of building
 <em>information types</em> and to 'connect' them to the types available in a
 <em>host</em> programming language, or data exchange language.</p>
 
-<p>For this, a <em>Q</em> implementation has to define a representation
-function that maps, for each <em>Q</em> type, a type of the host language that
+<p>For this, a <em>Finitio</em> implementation has to define a representation
+function that maps, for each <em>Finitio</em> type, a type of the host language that
 will represent values of the information type. This representation function is
 host/implementation-specific; see the documentation of the binding you use.</p>
 
-<pre>Rep(QType) -> HostType</pre>
+<pre>Rep(FinitioType) -> HostType</pre>
 
 <h2 id="any-types">Any type</h2>
 
@@ -205,7 +205,7 @@ implementation needs by specific bindings. It is occasionally useful in
 
 <p>A builtin type starts with a dot followed by the name of an abstraction in
 the host language, a Ruby class for instance. The set of values captured by the
-<em>Q</em> type is defined the same set as the host abstraction. For instance,</p>
+<em>Finitio</em> type is defined the same set as the host abstraction. For instance,</p>
 
 <div class="highlight highlight-ruby"><pre><span class="o">.</span><span class="n">Integer</span>  <span class="c1"># The set of values captured by the Integer class</span>
 </pre></div>
@@ -213,7 +213,7 @@ the host language, a Ruby class for instance. The set of values captured by the
 <p>To avoid builtins being spread everywhere, it is usual to define type
 aliases and build higher-level types with those aliases instead. This also
 provides better host-language independence and interoperability. For
-instance, the so-called <em>default system</em> in Qrb includes the following
+instance, the so-called <em>default system</em> in Finitio-rb includes the following
 definitions:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Integer</span> <span class="o">=</span> <span class="o">.</span><span class="n">Integer</span>
@@ -222,7 +222,7 @@ definitions:</p>
 
 <h2 id="sub-types">Sub types</h2>
 
-<p>Sub types are subsets of values. Q uses so-called 'specialization by
+<p>Sub types are subsets of values. Finitio uses so-called 'specialization by
 constraint' to define sub types. E.g., the set of positive integers can be
 defined as follows:</p>
 
@@ -234,7 +234,7 @@ defined as follows:</p>
 <div class="highlight highlight-ruby"><pre><span class="no">Evens</span> <span class="o">=</span> <span class="no">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="ss">positive</span><span class="p">:</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="ss">even</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
 </pre></div>
 
-<p>All types can be sub-typed through constraints. In addition, Q uses structural
+<p>All types can be sub-typed through constraints. In addition, Finitio uses structural
 type equivalence, which means that the type captured by the definition of
 <code>Evens</code> above is actually equivalent to the following one:</p>
 
@@ -290,7 +290,7 @@ relation types naturally follows:</p>
 <div class="highlight highlight-ruby"><pre><span class="no">Languages</span> <span class="o">=</span> <span class="p">{{</span> <span class="ss">name</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}}</span>
 </pre></div>
 
-<p>Relation types and their syntax are first-class in Q, most notably because
+<p>Relation types and their syntax are first-class in Finitio, most notably because
 of the availability of relational algebra for them, unlike pure sets of
 tuples.</p>
 
@@ -350,20 +350,20 @@ builtin type and two explicit converters, called the <em>dresser</em> and the
 
 <p>The converters provide load/dump code to convert from information types to
 the code abstraction and vice versa, thereby complementing a representation
-with a so-called <em>information contract</em>. A binding of <em>Q</em>, e.g.
-Qrb, guarantees that the dresser will only be executed on valid
+with a so-called <em>information contract</em>. A binding of <em>Finitio</em>, e.g.
+Finitio-rb, guarantees that the dresser will only be executed on valid
 representations of the corresponding information type. As the dresser tends to
 be exposed to an unsafe world, however, it should always be kept <em>pure and
 safe</em> (no side effects, no metaprogramming, no code evaluation, etc.).</p>
 
-<p>In order to keep <em>Q</em> schemas as clean as possible, implementations
+<p>In order to keep <em>Finitio</em> schemas as clean as possible, implementations
 may provide conventions-over-configuration protocols for automating
 information contracts. Bindings typically come with so-called 'internal' and
 'external' ADT protocols.</p>
 
 <h3>Internal ADT protocol</h3>
 
-<p>For instance, Qrb provides a more idiomatic way of connecting Ruby classes
+<p>For instance, Finitio-rb provides a more idiomatic way of connecting Ruby classes
 to information types. The information contracts may indeed be moved to the
 class itself, as one would probably do it, e.g. for testing purpose.</p>
 
@@ -385,7 +385,7 @@ class itself, as one would probably do it, e.g. for testing purpose.</p>
 <span class="k">end</span>
 </pre></div>
 
-<p>In Qrb, the following definition, that refers to the builtin type but has
+<p>In Finitio-rb, the following definition, that refers to the builtin type but has
 no dresser/undresser, makes the assumption that the convention is met and
 will use the <code>Color.rgb(...)</code> and <code>Color#to_rgb</code>
 methods:</p>
@@ -397,12 +397,12 @@ methods:</p>
 
 <p>Sometimes, relying on methods provided by the abstraction itself is
 impossible or not wanted (e.g. because it would lead to core extensions
-considered intrusive). For this reason, <em>Q</em> bindings may also support
+considered intrusive). For this reason, <em>Finitio</em> bindings may also support
 so called 'external' protocols.</p>
 
 <p>Support for example that the <code>rgb</code> information contract is not
 provided by the <code>Color</code> class itself and that it's not possible
-to implement it there. Qrb also allows the developer to define the contract
+to implement it there. Finitio-rb also allows the developer to define the contract
 methods in a specific module/class:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="k">module</span> <span class="nn">RgbContract</span>
@@ -418,18 +418,18 @@ methods in a specific module/class:</p>
 <span class="k">end</span>
 </pre></div>
 
-<p>Then, in Q, the external contract can be specified as follows:</p>
+<p>Then, in Finitio, the external contract can be specified as follows:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span> <span class="o">.</span><span class="n">RgbContract</span>
 </pre></div>
 
 <p>The mechanism described here for abstract data types is actually more
-general and applies to most of <em>Q</em>'s work. The next section describes
+general and applies to most of <em>Finitio</em>'s work. The next section describes
 information contracts in more details.</p>
 
 <h1 id="information-contracts">Information Contracts</h1>
 
-<p><em>Q</em> tries very hard not to be <em>yet another data language</em>. In
+<p><em>Finitio</em> tries very hard not to be <em>yet another data language</em>. In
 particular, it aims at integrating as smoothly as possible with existing
 technologies, in particular with programming languages and data exchange
 formats (e.g. JSON or YAML).</p>
@@ -454,7 +454,7 @@ a RGB triple, an hexadecimal string).</li>
 
 <p>The data types involved in the definitions of the information contracts are
 called <em>information types</em>, e.g. <code>{r: Byte, g: Byte, b:
-Byte}</code> (a <a href="#tuple-types">tuple type</a>). <em>Q</em> provides a
+Byte}</code> (a <a href="#tuple-types">tuple type</a>). <em>Finitio</em> provides a
 <a href="#type-system">rich type system</a> dedicated at capturing those data
 types precisely, mostly because type systems of mainstream programming
 languages fail at providing good support for them.</p>
@@ -525,7 +525,7 @@ follows:</p>
 <p>Such a mechanism is already built into the Ruby standard library, and explains
 why working with JSON data is rather natural in Ruby (because Ruby classes at
 left above are first-class citizen for Ruby programmers). Among others, this
-allows Qrb to be kept simple, and work with the Ruby type system only,
+allows Finitio-rb to be kept simple, and work with the Ruby type system only,
 delegating the interoperability with JSON to the usual parsing library. More
 work might be needed for other programming languages.</p>
 
@@ -533,7 +533,7 @@ work might be needed for other programming languages.</p>
 actually biased towards JSON. The developer has absolutely no way of stating
 that some value must be a Ruby <code>Integer</code>, since the JSON
 specification does not distinguish between integers from reals. One aim with
-<em>Q</em> and its type system is to provide a way for developers to fix this,
+<em>Finitio</em> and its type system is to provide a way for developers to fix this,
 by also being able to specify more specific information contracts and have
 full control of them. In the example, one would like to express an information
 contract like the following one:</p>
@@ -545,30 +545,30 @@ contract like the following one:</p>
 
 <p>Dressing and undressing generally applies recursively, e.g. when involving
 collection and abstract data types. This provides the real ability of
-<em>Q</em> to dress and undress complex data involving many information
+<em>Finitio</em> to dress and undress complex data involving many information
 contracts and many abstractions.</p>
 
-<p>Consider the following Q system, i.e. for dressing sequences of tuples
+<p>Consider the following Finitio system, i.e. for dressing sequences of tuples
 having a name attribute restricted to simple words:</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Word</span> <span class="o">=</span> <span class="o">.</span><span class="n">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/^[a-z]+$/</span> <span class="p">)</span>
 <span class="o">[</span><span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="no">Word</span> <span class="p">}</span><span class="o">]</span>
 </pre></div>
 
-<p>Dressing JSON data with Qrb, for instance, involves the following contracts:</p>
+<p>Dressing JSON data with Finitio-rb, for instance, involves the following contracts:</p>
 
 <ul>
   <li>Dressing <code>JSString</code> to Ruby <code>String</code> (by the standard library)</li>
-  <li>Dressing Ruby <code>String</code> to <code>Word</code> (by Qrb, returning a Ruby String)</li>
-  <li>Dressing Ruby <code>Hash</code> to <code>Tuple</code> (by Qrb, returning a Ruby Struct)</li>
-  <li>Dressing Ruby <code>Array</code> to <code>Seq</code> (by Qrb, returning a Ruby Array)</li>
+  <li>Dressing Ruby <code>String</code> to <code>Word</code> (by Finitio-rb, returning a Ruby String)</li>
+  <li>Dressing Ruby <code>Hash</code> to <code>Tuple</code> (by Finitio-rb, returning a Ruby Struct)</li>
+  <li>Dressing Ruby <code>Array</code> to <code>Seq</code> (by Finitio-rb, returning a Ruby Array)</li>
 </ul>
 
 <p>The concrete dressing result is implementation-dependent, as it involves
 the definition of the representation function <code>Rep</code> mentionned <a
 href="#type-system">previously</a>. The aim is not to define new host
-abstractions, e.g. classes, for every <em>Q</em> type defined in a system but
-rather to check that values <em>conform</em> to <em>Q</em> types and choose
+abstractions, e.g. classes, for every <em>Finitio</em> type defined in a system but
+rather to check that values <em>conform</em> to <em>Finitio</em> types and choose
 an idiomatic representation in the host language (see the parentheses).
 However, all those information contracts are actually involved in the dressing
 process and provide as many places to validate and coerce data in practice.</p>
@@ -578,12 +578,12 @@ process and provide as many places to validate and coerce data in practice.</p>
 <div class="col-md-2">
 <div class="menu">
   <div class="github-buttons">
-    <iframe src="http://ghbtns.com/github-btn.html?user=blambeau&repo=q-lang&type=watch&count=true&size=medium"
+    <iframe src="http://ghbtns.com/github-btn.html?user=blambeau&repo=finitio&type=watch&count=true&size=medium"
       allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
   </div>
   <ul class="nav">
     <li>
-      <a href="#q"><em>Q</em> &mdash; A Data Language</a>
+      <a href="#q"><em>Finitio</em> &mdash; A Data Language</a>
       <ul class="nav">
         <li>
           <a href="#examples">Examples</a>

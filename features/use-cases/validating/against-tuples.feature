@@ -1,4 +1,4 @@
-Feature: Validating against Q tuples
+Feature: Validating against Finitio tuples
 
   Background:
 
