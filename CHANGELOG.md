@@ -1,7 +1,7 @@
 # 0.3.0 / 2014-03-21
 
-* REQ: scoping rules allow type definitions to be declared after being used
-* REQ: support for recursive types.
+* REQ: scoping rules allow type definitions to be declared after being used (see language/scoping.feature)
+* REQ: support for recursive types (see use-cases/types/recursive-type.feature)
 
 # 0.2.0 / 2014-03-20
 
