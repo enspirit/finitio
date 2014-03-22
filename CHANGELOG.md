@@ -1,5 +1,6 @@
 # 0.3.0 / 2014-03-21
 
+* REQ: support for mutli-tuples and muti-relations (see high-level-types/multi-xxx-type.feature)
 * REQ: scoping rules allow type definitions to be declared after being used (see language/scoping.feature)
 * REQ: support for recursive types (see use-cases/types/recursive-type.feature)
 
