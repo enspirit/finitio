@@ -1,50 +1,67 @@
-body {
+.github-buttons {
+  padding-top: 15px;
+}
+
+article {
   font-family: Georgia, "Times New Roman", Times, serif;
   color: #555;
   font-size: 18px;
   line-height: 1.5;
+  margin-top: 15px;
 }
-h1, .h1,
-h2, .h2,
-h3, .h3,
-h4, .h4,
-h5, .h5,
-h6, .h6 {
+article h1, article .h1,
+article h2, article .h2,
+article h3, article .h3,
+article h4, article .h4,
+article h5, article .h5,
+article h6, article .h6 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #333;
 }
-h1 {
+#finitio {
   font-style: italic;
   text-align: center;
   font-weight: bold;
-  margin-top: 45px;
+  margin-top: 0px;
   margin-bottom: 25px;
-}
-h1:first-child {
   font-size: 48px;
 }
-h1:before {
-  content: '~';
+#finitio:before {
+  content: '~ ';
 }
-h1:after {
+#finitio:after {
   content: ' ~';
 }
-h2 {
+article h2 {
   margin-top: 30px;
   margin-bottom: 20px;
 }
-ul li {
+article ul li {
   margin: 0px;
   padding-top: 5px;
   padding-bottom: 0px;
 }
-nav li {
+article nav li {
   padding-top: 0px;
 }
+article pre {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+article .img {
+  text-align:center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+article .img img {
+  width: 60%;
+  margin: auto;
+}
+
 .menu {
   position: fixed;
-  top: 40px;
+  top: 80px;
   font-size: 16px;
 }
 .menu ul ul {
@@ -67,19 +84,7 @@ nav li {
 .tab-pane {
   padding-top: 15px;
 }
-pre {
-  margin-top: 10px;
-  margin-bottom: 15px;
-}
-.img {
-  text-align:center;
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-.container .img img {
-  width: 60%;
-  margin: auto;
-}
+
 footer {
   margin-top: 15px;
   padding-top: 15px;
@@ -87,7 +92,9 @@ footer {
   border-top: 1px solid #333333;
   text-align: center;
   font-size: 80%;
+  margin-bottom: 20px;
 }
+
 @media screen and (max-width: 960px) {
   .menu{ display: none; }
   #github-ribbon { display: none }
@@ -95,4 +102,5 @@ footer {
 @media print {
   .menu { display: none; }
   #github-ribbon { display: none }
+  .navbar{ display: none }
 }

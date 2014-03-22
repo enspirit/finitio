@@ -1,19 +1,19 @@
-desc "Use github markdown API to convert .md => .html"
-task :snippets do
-  require 'rest_client'
-  require 'path'
-  (Path.dir/'snippets').glob('**/*.md') do |page|
-    target = page.sub_ext('.html')
-    next if target.exists?
-    data = {
-      "text" => page.read,
-      "mode" => "markdown",
-      "context" => "blambeau/finitio"
-    }
-    res = RestClient.post "https://api.github.com/markdown",
-                          data.to_json,
-                          content_type: "application/vnd.github.beta+json",
-                          accept: "application/vnd.github.beta+json"
-    target.write(res.to_s)
+require './md_file'
+
+desc "Convert .md => .html in reference and pages"
+task :md2html do
+  (Path.dir/'doc').glob('**/*.md').each do |file|
+    MdFile.new(file).html
   end
 end
+
+desc "Inspect a md file"
+task :toc, :which do |t, args|
+  puts MdFile.new(Path.dir/args[:which]).toc.to_yaml
+end
+
+desc "Run rspec tests"
+task :test do
+  system("rspec --color -I. spec/*.rb")
+end
+task :default => :test

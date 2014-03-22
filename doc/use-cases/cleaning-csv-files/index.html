@@ -1,0 +1,102 @@
+<h1>
+<a name="cleaning-csv-files-the-easy-way-using-finitio-rb" class="anchor" href="#cleaning-csv-files-the-easy-way-using-finitio-rb"><span class="octicon octicon-link"></span></a>Cleaning .csv files the easy way using Finitio(-rb)</h1>
+
+<p>As a database and software consultant I frequently face the requirement of
+cleaning and migrating legacy data to a new database structure. Such data
+often comes from excel or as CSV files extracted from a previous database.
+An invariant is that legacy data is noisy and must alway be cleaned first.</p>
+
+<p>So suppose a CSV file, with noisy data (missing required fields, wrong dates,
+etc.). Your job is to split that CSV file: valid records on STDOUT, invalid
+ones on STDERR with an explanation.</p>
+
+<h2>
+<a name="the-data" class="anchor" href="#the-data"><span class="octicon octicon-link"></span></a>The data</h2>
+
+<pre lang="csv"><code>id,name,birthdate,score
+1,Aaron,2013-10-28,5
+2,Courtney,2013-26-08,5
+3,Connor,2014-10-11,8
+4,Meredith,2014-10-15,22
+5,Kristen,2014-03-28,8
+6,Nissim,2014-06-05,
+...
+</code></pre>
+
+<p>Given that,</p>
+
+<ul>
+<li>Some dates are known to be wrong. It was a text field and some people
+inverted the month and the day, leading to dates such as <code>2013-26-08</code>
+instead of <code>2013-08-26</code> (see row 2).</li>
+<li>The <code>score</code> field is required and supposed to be between 0 and 10. In
+practice it is sometimes missing or bigger than 10 (see rows 4 and 6).</li>
+</ul><h2>
+<a name="finition-schema-at-the-rescue" class="anchor" href="#finition-schema-at-the-rescue"><span class="octicon octicon-link"></span></a>Finition schema at the rescue</h2>
+
+<p>Let write a schema that will coerce the data and detect invalid values.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># String is an alias for Ruby's String</span>
+<span class="nb">String</span>  <span class="o">=</span> <span class="o">.</span><span class="n">String</span>
+
+<span class="c1"># We'll have to coerce Integer literals from ruby String</span>
+<span class="nb">Integer</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">literal</span><span class="o">&gt;</span> <span class="o">.</span><span class="n">String</span> <span class="p">\(</span> <span class="n">s</span> <span class="o">|</span> <span class="nb">Integer</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>       <span class="p">\(</span> <span class="n">i</span> <span class="o">|</span> <span class="n">i</span><span class="o">.</span><span class="n">to_s</span>    <span class="p">)</span>
+
+<span class="c1"># We'll have to coerce Date literals from iso8601 String </span>
+<span class="no">Date</span>    <span class="o">=</span> <span class="o">&lt;</span><span class="n">literal</span><span class="o">&gt;</span> <span class="o">.</span><span class="n">String</span> <span class="p">\(</span> <span class="n">s</span> <span class="o">|</span> <span class="no">Date</span><span class="o">.</span><span class="n">iso8601</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">)</span>  <span class="p">\(</span> <span class="n">d</span> <span class="o">|</span> <span class="n">d</span><span class="o">.</span><span class="n">iso8601</span> <span class="p">)</span>
+
+<span class="c1"># Valid scores are integers between 0 and 10 inclusive</span>
+<span class="no">Score</span> <span class="o">=</span> <span class="nb">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="ss">valid</span><span class="p">:</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">10</span> <span class="p">)</span>
+
+<span class="c1"># One CSV row should meet the following tuple type</span>
+<span class="p">{</span>
+  <span class="nb">id</span><span class="p">:</span>   <span class="nb">Integer</span><span class="p">,</span>
+  <span class="nb">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+  <span class="ss">birthdate</span><span class="p">:</span> <span class="no">Date</span><span class="p">,</span>
+  <span class="ss">score</span><span class="p">:</span> <span class="no">Score</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="making-the-split-using-finitio-rb" class="anchor" href="#making-the-split-using-finitio-rb"><span class="octicon octicon-link"></span></a>Making the split using Finitio(-rb)</h2>
+
+<p>Here we go! Dress each CSV line using the schema, rescue on a type error:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s1">'finitio'</span>
+<span class="nb">require</span> <span class="s1">'csv'</span>
+
+<span class="c1"># Let load the schema</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="no">Finitio</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">'schema.fio'</span><span class="p">))</span>
+
+<span class="c1"># For each CSV row</span>
+<span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'data.csv'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">io</span><span class="o">|</span>
+  <span class="n">csv</span> <span class="o">=</span> <span class="o">::</span><span class="no">CSV</span><span class="o">.</span><span class="n">new</span> <span class="n">io</span><span class="p">,</span> <span class="ss">headers</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="n">csv</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">row</span><span class="o">|</span>
+    <span class="n">tuple</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">to_hash</span>
+
+    <span class="c1"># Dress the tuple, on success puts it on STDOUT with coerced</span>
+    <span class="c1"># values. On error display it with the error message on STDERR</span>
+    <span class="k">begin</span>
+      <span class="nb">puts</span> <span class="n">schema</span><span class="o">.</span><span class="n">dress</span><span class="p">(</span><span class="n">tuple</span><span class="p">)</span><span class="o">.</span><span class="n">inspect</span>
+    <span class="k">rescue</span> <span class="no">Finitio</span><span class="o">::</span><span class="no">TypeError</span> <span class="o">=&gt;</span> <span class="n">ex</span>
+      <span class="nb">puts</span> <span class="s2">"Skipping `</span><span class="si">#{</span><span class="n">row</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">strip</span><span class="si">}</span><span class="s2">`: </span><span class="si">#{</span><span class="n">ex</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">end</span>
+
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Example output:</p>
+
+<pre><code>{:id=&gt;1, :name=&gt;"Aaron", :birthdate=&gt;#&lt;Date: 2013-10-28 ((2456594j,0s,0n),+0s,2299161j)&gt;, :score=&gt;5}
+Skipping `2,Courtney,2013-26-08,5`: Invalid value `2013-26-08` for Date
+{:id=&gt;3, :name=&gt;"Connor", :birthdate=&gt;#&lt;Date: 2014-10-11 ((2456942j,0s,0n),+0s,2299161j)&gt;, :score=&gt;8}
+Skipping `4,Meredith,2014-10-15,22`: Invalid value `22` for Score (not valid)
+{:id=&gt;5, :name=&gt;"Kristen", :birthdate=&gt;#&lt;Date: 2014-03-28 ((2456745j,0s,0n),+0s,2299161j)&gt;, :score=&gt;8}
+Skipping `6,Nissim,2014-06-05,`: Invalid value `nil` for Score
+{:id=&gt;7, :name=&gt;"Donna", :birthdate=&gt;#&lt;Date: 2013-03-29 ((2456381j,0s,0n),+0s,2299161j)&gt;, :score=&gt;2}
+{:id=&gt;8, :name=&gt;"Jenette", :birthdate=&gt;#&lt;Date: 2014-04-04 ((2456752j,0s,0n),+0s,2299161j)&gt;, :score=&gt;2}
+{:id=&gt;9, :name=&gt;"Mason", :birthdate=&gt;#&lt;Date: 2014-08-05 ((2456875j,0s,0n),+0s,2299161j)&gt;, :score=&gt;8}
+Skipping `10,Yolanda,2014-03-25,77`: Invalid value `77` for Score (not valid)
+{:id=&gt;11, :name=&gt;"Edan", :birthdate=&gt;#&lt;Date: 2015-02-18 ((2457072j,0s,0n),+0s,2299161j)&gt;, :score=&gt;8}
+</code></pre>

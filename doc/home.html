@@ -1,0 +1,134 @@
+<h1 id="finitio">Finitio</h1>
+
+<p><em>Finitio</em> is a data language. For now, it is limited to a data
+<em>definition</em> language (DDL). Think "JSON/XML schema", but the right
+way. <em>Finitio</em> comes with a dedicated type system for defining data and
+a theory, called <em>information contracts</em>, for interoperability with
+programming and data exchange languages.</p>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#validating" data-toggle="tab">Validating</a></li>
+  <li><a href="#coercing" data-toggle="tab">Coercing</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="validating">
+<p>Suppose we want to capture information about a medical diagnosis for some patient.
+At left, a typical digital document in JSON. At right, the corresponding <em>Finitio</em> schema.</p>
+
+<div class='row'>
+<div class="col-md-6">
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"patient"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"27b3ceb0-7e10-0131-c9f1-3c07545ed162"</span><span class="p">,</span>
+    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Marcia Delgados"</span><span class="p">,</span>
+    <span class="nt">"dob"</span><span class="p">:</span> <span class="s2">"1975-11-03"</span>
+  <span class="p">},</span>
+  <span class="nt">"symptoms"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"Nausea"</span><span class="p">,</span>
+    <span class="s2">"Fever"</span>
+  <span class="p">],</span>
+  <span class="nt">"temperature"</span><span class="p">:</span> <span class="mf">39.5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="col-md-6">
+<div class="highlight highlight-ruby"><pre><span class="no">Temp</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">celsius</span><span class="o">&gt;</span> <span class="no">Real</span><span class="p">(</span> <span class="n">f</span> <span class="o">|</span> <span class="n">f</span> <span class="o">&gt;=</span> <span class="mi">33</span><span class="o">.</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="o">.</span><span class="mi">0</span> <span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">patient</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nb">id</span>   <span class="p">:</span> <span class="no">Uuid</span><span class="p">,</span>
+    <span class="nb">name</span> <span class="p">:</span> <span class="no">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">),</span>
+    <span class="n">dob</span>  <span class="p">:</span> <span class="no">Date</span><span class="p">(</span> <span class="n">d</span> <span class="o">|</span> <span class="ss">alive</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">year</span> <span class="o">&gt;</span> <span class="mi">1890</span> <span class="p">),</span>
+  <span class="p">},</span>
+  <span class="n">symptoms</span> <span class="p">:</span> <span class="o">[</span> <span class="no">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">]</span><span class="p">,</span>
+  <span class="n">temperature</span> <span class="p">:</span> <span class="no">Temp</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+<p>Suppose an invalid document comes in. With <em>Finitio</em>, you properly
+validate input data and get friendly error messages.</p>
+
+<div class='row'>
+<div class="col-md-5">
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"patient"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"27b3ceb0"</span><span class="p">,</span>
+    <span class="nt">"dob"</span><span class="p">:</span> <span class="s2">"1875-11-03"</span>
+  <span class="p">},</span>
+  <span class="nt">"symptoms"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"Nausea"</span><span class="p">,</span>
+    <span class="s2">""</span>
+  <span class="p">],</span>
+  <span class="nt">"temperature"</span><span class="p">:</span> <span class="mf">12.5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="col-md-7">
+<pre><code>[patient] Missing attribute `name`
+[patient/id] Invalid value `27b3ceb0` for Uuid
+[patient/dob] Invalid value `1875-11-03` for Date (not alive)
+[symptoms/1] Invalid value "" for String( s | s.size &gt; 0 )
+[temperature] Invalid value 12.5 for Temperature (celsius)
+</code></pre>
+</div>
+</div>
+</div>
+
+<div class="tab-pane" id="coercing">
+
+<p>Data exchange languages, e.g. JSON, impose a very low data abstraction
+level: e.g. boolean, string &amp; numbers. <em>Finitio</em> helps raising the
+level of discourse while navigating up and down in abstraction levels
+with <a href="#information-contracts">information contracts</a>:</p>
+
+<div class='row'>
+<div class="col-md-6">
+<div class="highlight highlight-json"><pre><span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">"where"</span><span class="p">:</span> <span class="s2">"Brussels"</span><span class="p">,</span>
+    <span class="nt">"at"</span><span class="p">:</span> <span class="s2">"2014-03-01"</span><span class="p">,</span>
+    <span class="nt">"temperature"</span><span class="p">:</span> <span class="mf">13.5</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="nt">"where"</span><span class="p">:</span> <span class="s2">"Paris"</span><span class="p">,</span>
+    <span class="nt">"at"</span><span class="p">:</span> <span class="s2">"2014-02-27"</span><span class="p">,</span>
+    <span class="nt">"temperature"</span><span class="p">:</span> <span class="mf">12.0</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="col-md-6">
+<div class="highlight highlight-ruby"><pre><span class="no">Measure</span> <span class="o">=</span> <span class="o">.</span><span class="n">Measure</span> <span class="o">&lt;</span><span class="n">info</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="ss">where</span><span class="p">:</span> <span class="no">String</span><span class="p">,</span>
+  <span class="ss">at</span><span class="p">:</span> <span class="no">Date</span><span class="p">,</span>
+  <span class="ss">temperature</span><span class="p">:</span> <span class="nb">Float</span><span class="p">(</span> <span class="n">f</span> <span class="o">|</span> <span class="n">f</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">40</span><span class="o">.</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">&lt;=</span> <span class="mi">50</span><span class="o">.</span><span class="mi">0</span> <span class="p">)</span>
+<span class="p">}</span>
+<span class="o">[</span><span class="no">Measure</span><span class="o">]</span>
+</pre></div>
+<p style="font-size: 90%;">Two information contracts here. An implicit one,
+<code>Date</code>, provided by <em>Finitio</em> itself (see <a
+href="#implementations">implementations</a>) and another one, <code>Measure</code> that
+connects a <a href="#tuple-types">tuple type</a> to a <code>Measure</code> class.</p>
+</div>
+</div>
+
+<p>In Finitio-rb for instance, the Ruby binding of <em>Finitio</em>, loading and dressing
+the JSON data above correctly returns an <code>Array</code> of <code>Measure</code>
+instances. Dates are automatically coerced too:</p>
+
+<div class='row'>
+<div class="col-md-12">
+<div class="highlight highlight-ruby"><pre><span class="o">[</span>
+   <span class="c1">#&lt;Measure:0x007fb5d3a1ba40 @where="Brussels", @at=#&lt;Date: 2014-03-01&gt;, @temperature=13.5&gt;,</span>
+   <span class="c1">#&lt;Measure:0x007fb5d3a16450 @where="Paris", @at=#&lt;Date: 2014-02-27&gt;, @temperature=12.0&gt;</span>
+<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+
+</div>
+</div>
