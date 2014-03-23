@@ -2,12 +2,17 @@
 layout:
   twocols
 toc:
-- href: '#dressing--undressing'
-  label: Dressing &amp; Undressing
-- href: '#data-interoperability'
-  label: Data Interoperability
-- href: '#contracts-in-action'
-  label: Contracts in Action
+- href: ! 'type-system'
+  label: Type System
+- href: ! 'information-contracts'
+  label: Information Contracts
+  children:
+  - href: '#dressing--undressing'
+    label: Dressing & Undressing
+  - href: '#data-interoperability'
+    label: Data Interoperability
+  - href: '#contracts-in-action'
+    label: Contracts in Action
 ---
 # Information Contracts
 

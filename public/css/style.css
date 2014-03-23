@@ -19,6 +19,10 @@ article h6, article .h6 {
   font-weight: normal;
   color: #333;
 }
+article h1, article .h1 {
+  margin-top: 0px;
+  margin-bottom: 25px;
+}
 #finitio {
   font-style: italic;
   text-align: center;
@@ -49,13 +53,12 @@ article pre {
   margin-top: 10px;
   margin-bottom: 15px;
 }
-article .img {
+article img {
+  display: block;
   text-align:center;
   margin-top: 15px;
   margin-bottom: 15px;
-}
-article .img img {
-  width: 60%;
+  width: 70%;
   margin: auto;
 }
 

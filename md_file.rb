@@ -27,12 +27,8 @@ class MdFile
     md_file.exists? || html_file.exists?
   end
 
-  def raw
-    @raw ||= source.exists? ? source.read : ""
-  end
-
   def data
-    @data ||= (raw =~ FRONT_MATTER) ? YAML::load($1) : DEFAULT_DATA
+    @data ||= (md_raw =~ FRONT_MATTER) ? YAML::load($1) : DEFAULT_DATA
   end
 
   def full_data
@@ -43,28 +39,34 @@ class MdFile
     source.sub_ext(".md")
   end
 
+  def md_raw
+    @md_raw ||= md_file.exists? ? md_file.read : ""
+  end
+
   def md
-    @md ||= (raw =~ FRONT_MATTER) ? $' : raw
+    @md ||= (md_raw =~ FRONT_MATTER) ? $' : md_raw
   end
 
   def html_file
     source.sub_ext(".html")
   end
 
-  def toc
-    @toc ||= html.scan(ANCHOR_RX).map{|match|
-      { "level" => match[0], "href" => match[1], "label" => match[2] }
-    }
+  def html_raw
+    html_file.read
   end
 
   def html
     if html_file.exists?
       html_file.read
     else
-      MdFile.md2html(md).tap{|doc|
-        html_file.write(doc)
-      }
+      MdFile.md2html(md).tap{|doc| html_file.write(doc) }
     end
+  end
+
+  def toc
+    @toc ||= html.scan(ANCHOR_RX).map{|match|
+      { "level" => match[0], "href" => match[1], "label" => match[2] }
+    }
   end
 
   def inspect

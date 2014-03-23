@@ -9,6 +9,13 @@
     <ul class="nav">
       *{toc}{
         <li><a href="${href}">${label}</a></li>
+        #{children}{
+          <ul class="nav">
+            *{children}{
+              <li><a href="${href}">${label}</a></li>
+            }
+          </ul>
+        }
       }
     </ul>
   </div>

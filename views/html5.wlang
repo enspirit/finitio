@@ -28,20 +28,12 @@
 <!-- Fixed navbar -->
 <div class="navbar navbar-default" role="navigation">
   <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/"><em>Finitio</em></a>
-    </div>
-    <div class="navbar-collapse collapse">
+    <div class="">
       <ul class="nav navbar-nav">
         <li id="li-home"><a href="/">Home</a></li>
+        <li id="li-download"><a href="/download">Download</a></li>
         <li id="li-use-cases"><a href="/use-cases">Use cases</a></li>
-        <li id="li-reference"><a href="/reference">Reference</a></li>
+        <li id="li-documentation"><a href="/documentation">Documentation</a></li>
       </ul>
       <div class="github-buttons nav navbar-nav navbar-right">
         <!-- github -->

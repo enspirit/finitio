@@ -4,9 +4,9 @@ require 'sinatra'
 require 'wlang'
 require "sinatra/reloader" if development?
 
-CURRENT_VER = "0.3.0"
+CURRENT_VER = "0.1.x"
 ROOT        = Path.dir
-DOC         = ROOT/"doc"
+PAGES       = ROOT/"pages"
 
 set :cache, {}
 
@@ -21,8 +21,8 @@ get '/' do
   call(env.merge("PATH_INFO" => "/home"))
 end
 
-get '/reference' do
-  call(env.merge("PATH_INFO" => "/reference/#{CURRENT_VER}"))
+get '/documentation' do
+  redirect "/documentation/#{CURRENT_VER}/type-system"
 end
 
 ### Pages
@@ -44,5 +44,5 @@ def md_file(base, url)
 end
 
 get '/*' do |url|
-  md_file DOC, url
+  md_file PAGES, url
 end

@@ -2,8 +2,9 @@
 layout:
   twocols
 toc:
-- href: '#type-system'
+- href: 'type-system'
   label: Type System
+  children:
   - href: '#any-type'
     label: Any type
   - href: '#builtin-types'
@@ -22,6 +23,8 @@ toc:
     label: Relation types
   - href: '#abstract-data-types'
     label: Abstract Data types
+- href: 'information-contracts'
+  label: Information Contracts
 ---
 # Type System
 

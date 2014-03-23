@@ -2,8 +2,11 @@
 layout:
   twocols
 toc:
-- href: /use-cases/cleaning-csv-files
-  label: Cleaning .csv files
+- href: use-cases
+  label: Use cases
+  children:
+  - href: use-cases/cleaning-csv-files
+    label: Cleaning .csv files
 ---
 *Finitio* can be used in many places where data is involved. In particular, it
 can be used for:
@@ -22,4 +25,7 @@ can be used for:
   data exchange languages, etc.
 
 Have a look at the concrete use-cases listed in the menu at right to better
-understand how *Finitio* can be used in practice.
+understand how *Finitio* is used in practice. We hope to enrich this
+collection of concrete examples in the near future, so feel free to contribute
+your use-case if you use Finitio.
+

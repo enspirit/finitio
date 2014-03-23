@@ -23,7 +23,7 @@ end
   '/home',
   '/use-cases',
   '/use-cases/cleaning-csv-files',
-  '/reference/0.1.x/type-system'
+  '/documentation/0.1.x/type-system'
 ].each do |url|
 
   describe "get #{url}" do
