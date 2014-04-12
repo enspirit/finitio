@@ -4,7 +4,7 @@ require 'sinatra'
 require 'wlang'
 require "sinatra/reloader" if development?
 
-CURRENT_VER = "0.1.x"
+CURRENT_VER = "0.2.x"
 ROOT        = Path.dir
 PAGES       = ROOT/"pages"
 
@@ -21,8 +21,8 @@ get '/' do
   call(env.merge("PATH_INFO" => "/home"))
 end
 
-get '/documentation' do
-  redirect "/documentation/#{CURRENT_VER}/type-system"
+get '/reference' do
+  redirect "/reference/#{CURRENT_VER}/type-system"
 end
 
 ### Pages

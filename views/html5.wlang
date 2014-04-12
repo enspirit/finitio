@@ -33,7 +33,7 @@
         <li id="li-home"><a href="/">Home</a></li>
         <li id="li-download"><a href="/download">Download</a></li>
         <li id="li-use-cases"><a href="/use-cases">Use cases</a></li>
-        <li id="li-documentation"><a href="/documentation">Documentation</a></li>
+        <li id="li-reference"><a href="/reference">Reference</a></li>
       </ul>
       <div class="github-buttons nav navbar-nav navbar-right">
         <!-- github -->
