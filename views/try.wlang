@@ -1,0 +1,65 @@
+<div class="try">
+  <script src="/js/finitio.js"></script>
+  <div class="row">
+    <div class="col-md-12">
+      <p>The demo below is powered by finitio.js (conforming Finitio 0.2).
+      The Finitio schema (at right) is divided into two parts:</p>
+      <ul>
+        <li>The system (below) abstracts from Javascript by using low-level
+            Finitio constructs to build higher level abstractions.
+        <li>The schema (above) raises the abstraction level further by providing
+            domain-driven data abstractions such as Uuid or Temperature.</li>
+      </ul>
+      <p>Play with it, by entering invalid dates of birth for example.
+         Observe also how Finitio fixes javascript failures with respect to
+         parsing dates.</p>
+      <hr/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <p>Data (json)</p>
+      <textarea id="try-data">+{data}</textarea>
+    </div>
+
+    <div class="col-md-6">
+      <p>Schema (finitio &mdash; high-level)</p>
+      <textarea id="try-schema">+{schema}</textarea>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <button id="try-validate" class="btn btn-primary">Validate</button>
+      <div id="try-feedback" class="alert"></div>
+    </div>
+    <div class="col-md-6">
+      <p>System (finitio &mdash; low-level js binding)</p>
+      <textarea id="try-system">+{system}</textarea>
+    </div>
+  </div>
+</div>
+<script>
+$(function(){
+  $("#try-validate").click(function(){
+    var schema = $("#try-schema").val(),
+        data   = $("#try-data").val(),
+        system = $("#try-system").val();
+    try {
+      var sys = Finitio.parse(system, { world: { Finitio: Finitio } });
+          sys = sys.parse(schema);
+      var coerced = sys.dress(JSON.parse(data));
+      $("#try-feedback").text("Data is valid!");
+      $("#try-feedback").removeClass("alert-danger");
+      $("#try-feedback").addClass("alert-success");
+    } catch (ex) {
+      var msg = ex.message;
+      if (ex.location) {
+        msg = "[" + ex.location + "] " + msg;
+      }
+      $("#try-feedback").text(msg);
+      $("#try-feedback").removeClass("alert-success");
+      $("#try-feedback").addClass("alert-danger");
+    }
+  });
+});
+</script>

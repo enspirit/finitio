@@ -31,6 +31,7 @@
     <div class="">
       <ul class="nav navbar-nav">
         <li id="li-home"><a href="/">Home</a></li>
+        <li id="li-try"><a href="/try">Try it!</a></li>
         <li id="li-download"><a href="/download">Download</a></li>
         <li id="li-use-cases"><a href="/use-cases">Use cases</a></li>
         <li id="li-reference"><a href="/reference">Reference</a></li>
