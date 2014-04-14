@@ -1,10 +1,8 @@
 # Finitio - A Data Language
 
 *Finitio* is a data language. For now, it is limited to a data definition
-language (DDL). Think "JSON/XML schema", but the correct way. *Finitio* comes
-with a dedicated type system for defining data and a theory, called
-*information contracts*, for interoperability with programming and data
-exchange languages.
+language (DDL). Think "JSON/XML schema", but a slightly different way, that
+puts the emphasis on precision. *Finitio* comes with a dedicated type system for defining data and a theory, called *information contracts*, for interoperability with programming and data exchange languages.
 
 ## Links
 
