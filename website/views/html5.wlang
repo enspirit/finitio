@@ -67,5 +67,13 @@
 </footer>
 </div>
 
+<script>
+$(function(){
+  $("a.anchor").each(function(i, elm){
+    $(elm).attr('id', $(elm).attr('href').slice(1));
+  })
+})
+</script>
+
 </body>
 </html>

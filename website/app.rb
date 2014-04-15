@@ -4,7 +4,7 @@ require 'sinatra'
 require 'wlang'
 require "sinatra/reloader" if development?
 
-CURRENT_VER = "0.2.x"
+CURRENT_VER = "0.3.x"
 ROOT        = Path.dir
 PAGES       = ROOT/"pages"
 

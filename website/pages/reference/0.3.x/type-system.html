@@ -1,0 +1,283 @@
+<h1>
+<a name="user-content-type-system" class="anchor" href="#type-system"><span class="octicon octicon-link"></span></a>Type System</h1>
+
+<p><em>Finitio</em>'s type system is different from those you can find in a programming
+language. The aim here is to capture <em>information</em>, not software <em>behavior</em>.
+Therefore, the definition of <em>type</em> differs. In <em>Finitio</em>, a type is a set of
+values, a subtype is a subset, a supertype is a superset. That's it.</p>
+
+<p>However, the aim here is <strong>not</strong> to define yet another type system with a
+fixed set of available types such as <code>boolean</code>, <code>string</code> and <code>integer</code>, but
+rather to provide an abstract way of building <em>information types</em> and to
+'connect' them to the types available in a <em>host</em> programming language, or
+data exchange language.</p>
+
+<p>For this, a <em>Finitio</em> implementation has to define a representation function
+that maps, for each <em>Finitio</em> type, a type of the host language that will
+represent values of the information type. This representation function is
+host/implementation-specific; see the documentation of the binding you use.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Rep</span><span class="p">(</span><span class="no">FinitioType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="no">HostType</span>
+</pre></div>
+
+<h2>
+<a name="user-content-any-type" class="anchor" href="#any-type"><span class="octicon octicon-link"></span></a>Any type</h2>
+
+<p>Any type captures the set of all possible 'values' representable in the
+host language. It is mostly provided for the sake of completeness and some
+implementation needs by specific bindings. It is occasionally useful in
+"don't care" situations too. Any is captured by a single dot:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Any</span> <span class="o">=</span> <span class="o">.</span>
+</pre></div>
+
+<h2>
+<a name="user-content-builtin-types" class="anchor" href="#builtin-types"><span class="octicon octicon-link"></span></a>Builtin types</h2>
+
+<p>A builtin type starts with a dot followed by the name of an abstraction in the
+host language, a Ruby class for instance. The set of values captured by the
+<em>Finitio</em> type is defined the same set as the host abstraction. For instance,</p>
+
+<div class="highlight highlight-ruby"><pre><span class="o">.</span><span class="n">Integer</span>  <span class="c1"># The set of values captured by the Integer class</span>
+</pre></div>
+
+<p>To avoid builtins being spread everywhere, it is usual to define type aliases
+and build higher-level types with those aliases instead. This also provides
+better host-language independence and interoperability. For instance, the
+so-called <em>default system</em> in Finitio-rb includes the following definitions:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="nb">Integer</span> <span class="o">=</span> <span class="o">.</span><span class="n">Integer</span>
+<span class="no">Nil</span>     <span class="o">=</span> <span class="o">.</span><span class="n">NilClass</span>
+</pre></div>
+
+<h2>
+<a name="user-content-sub-types" class="anchor" href="#sub-types"><span class="octicon octicon-link"></span></a>Sub types</h2>
+
+<p>Sub types are subsets of values. Finitio uses so-called 'specialization by
+constraint' to define sub types. E.g., the set of positive integers can be
+defined as follows:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Posint</span> <span class="o">=</span> <span class="nb">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span>
+</pre></div>
+
+<p>Multiple constraints can be distinguished by name:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Evens</span> <span class="o">=</span> <span class="nb">Integer</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="ss">positive</span><span class="p">:</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="ss">even</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
+</pre></div>
+
+<p>All types can be sub-typed through constraints. In addition, Finitio uses
+structural type equivalence, which means that the type captured by the
+definition of <code>Evens</code> above is actually equivalent to the following one:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Evens</span> <span class="o">=</span> <span class="no">PosInt</span><span class="p">(</span> <span class="n">i</span> <span class="o">|</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
+</pre></div>
+
+<h2>
+<a name="user-content-union-types" class="anchor" href="#union-types"><span class="octicon octicon-link"></span></a>Union types</h2>
+
+<p>In some respect, union types are the dual of subtypes. They allow defining new
+types by generalization, through the union of the sets of values defined by
+other types. For instance, the missing Boolean type of Ruby is simply captured
+as:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Boolean</span> <span class="o">=</span> <span class="o">.</span><span class="n">TrueClass</span><span class="o">|.</span><span class="n">FalseClass</span>
+</pre></div>
+
+<p>Union types are also very useful for capturing possibly missing information
+(aka NULL/nil). For instance, the following type will capture either an
+integer or nil:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">MaybeInt</span> <span class="o">=</span> <span class="nb">Integer</span><span class="o">|</span><span class="no">Nil</span>
+</pre></div>
+
+<h2>
+<a name="user-content-seq-types" class="anchor" href="#seq-types"><span class="octicon octicon-link"></span></a>Seq types</h2>
+
+<p>Capturing sequences (aka arrays) of values is straightforward. Sequences are
+ordered and may contain duplicates:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Measures</span> <span class="o">=</span> <span class="o">[</span><span class="no">Posint</span><span class="o">]</span>
+</pre></div>
+
+<h2>
+<a name="user-content-set-types" class="anchor" href="#set-types"><span class="octicon octicon-link"></span></a>Set types</h2>
+
+<p>Capturing sets of values is straightforward too. Set are unordered and may not
+contain duplicates:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Hobbies</span> <span class="o">=</span> <span class="p">{</span><span class="nb">String</span><span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="user-content-struct-types" class="anchor" href="#struct-types"><span class="octicon octicon-link"></span></a>Struct types</h2>
+
+<p>Capturing structs is straightforward too. Structs can be used to capture ordered pairs, triples, and so forth. Each struct component has its own type:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Signature</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span> <span class="no">Posint</span><span class="p">,</span> <span class="no">Boolean</span><span class="o">&gt;</span>
+</pre></div>
+
+<h2>
+<a name="user-content-tuple--multi-tuple-types" class="anchor" href="#tuple--multi-tuple-types"><span class="octicon octicon-link"></span></a>Tuple &amp; Multi-Tuple types</h2>
+
+<p>Tuples capture information facts. Unlike structs, tuples have <em>named</em> components called 'attributes'. Attributes must all have different names and are not particularly ordered. A set of such <code>(name,Type)</code> pairs is called a <em>heading</em>.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">ProgrammingLanguage</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}</span>
+</pre></div>
+
+<p>By default, all attributes are mandatory. It is very useful in practice to allow optional attributes too. Multi-tuples provide such support. Multi-tuples are a very convenient shorthand over unions of tuple types. For instance,
+the multi-tuple type below allows <code>since</code> to be omitted:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="p">{</span> <span class="nb">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="n">since</span> <span class="p">:?</span> <span class="no">Date</span> <span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="user-content-relation--multi-relation-types" class="anchor" href="#relation--multi-relation-types"><span class="octicon octicon-link"></span></a>Relation &amp; Multi-relation types</h2>
+
+<p>Relations are sets of tuples, all of which have the same heading. The notation for defining relation types naturally follows:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Languages</span> <span class="o">=</span> <span class="p">{{</span> <span class="nb">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">since</span><span class="p">:</span> <span class="no">Date</span> <span class="p">}}</span>
+</pre></div>
+
+<p>Relation types and their syntax are first-class in Finitio, most notably
+because of the availability of relational algebra for them, unlike pure sets
+of tuples.</p>
+
+<p>Note that relations do not allow duplicates and have no significant ordering
+of their tuples. If the ordering is significant, you should consider a
+sequence of tuples instead:</p>
+
+<pre><code>Preferences = [{ lang: String, reason: String }]
+</code></pre>
+
+<p>Similarly to tuples, multi-relations allow optional attributes. For instance,</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Languages</span> <span class="o">=</span> <span class="p">{{</span> <span class="nb">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">author</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="n">since</span> <span class="p">:?</span> <span class="no">Date</span> <span class="p">}}</span>
+</pre></div>
+
+<h2>
+<a name="user-content-abstract-data-types" class="anchor" href="#abstract-data-types"><span class="octicon octicon-link"></span></a>Abstract Data types</h2>
+
+<p>Abstract data types, also called user-defined types, provide the way to define
+higher level abstractions easily and to optionally connect them to types of
+the host language (e.g. a Ruby class). For instance, a <code>Color</code> abstraction can
+be defined as follows:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">},</span>
+        <span class="o">&lt;</span><span class="n">hex</span><span class="o">&gt;</span> <span class="nb">String</span><span class="p">(</span> <span class="n">s</span> <span class="o">|</span> <span class="n">s</span> <span class="o">=~</span> <span class="sr">/^#[0-9a-f]{6}$/i</span> <span class="p">)</span>
+</pre></div>
+
+<p>The Color definition above shows that a color can be represented either by a
+RGB triple (through a tuple type), or by a hexadecimal string (e.g. #8a2be2).
+<code>rgb</code> and <code>hex</code> are called the <strong>information representations</strong> of the Color
+abstraction.</p>
+
+<h3>
+<a name="user-content-binding-an-adt-to-the-host-language" class="anchor" href="#binding-an-adt-to-the-host-language"><span class="octicon octicon-link"></span></a>Binding an ADT to the host language</h3>
+
+<p>Defined as above, the type will behave as a union type, i.e. it will let pass
+valid RGB triples and hexadecimal strings. Now, representations can be
+complemented to connect the Color abstraction to a host language type, e.g. a
+Color Ruby class, and raise the level of discourse on the programming side.
+This amounts to providing one information contract per representation.</p>
+
+<p>Suppose for example that the following <code>Color</code> class has been defined:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Color</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="vi">@r</span><span class="p">,</span> <span class="vi">@g</span><span class="p">,</span> <span class="vi">@b</span> <span class="o">=</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span>
+  <span class="k">end</span>
+  <span class="kp">attr_reader</span> <span class="ss">:r</span><span class="p">,</span> <span class="ss">:g</span><span class="p">,</span> <span class="ss">:b</span>
+
+<span class="k">end</span>
+</pre></div>
+
+<p>Connecting our information ADT to this Color class can be done through a
+builtin type and two explicit converters, called the <em>dresser</em> and the
+<em>undresser</em>: (We only show the <code>rgb</code> case here; the <code>hex</code> one is defined in a
+similar way)</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
+                     <span class="p">\(</span> <span class="n">tuple</span> <span class="o">|</span> <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">tuple</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="p">)</span>
+                     <span class="p">\(</span> <span class="n">color</span> <span class="o">|</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">b</span><span class="p">}</span> <span class="p">)</span>
+</pre></div>
+
+<p>The converters provide load/dump code to convert from information types to the
+code abstraction and vice versa, thereby complementing a representation with a
+so-called <em>information contract</em>. A binding of <em>Finitio</em>, e.g. Finitio-rb,
+guarantees that the dresser will only be executed on valid representations of
+the corresponding information type. As the dresser tends to be exposed to an
+unsafe world, however, it should always be kept <em>pure and safe</em> (no side
+effects, no metaprogramming, no code evaluation, etc.).</p>
+
+<p>In order to keep <em>Finitio</em> schemas as clean as possible, implementations may
+provide conventions-over-configuration protocols for automating information
+contracts. Bindings typically come with so-called 'internal' and 'external'
+ADT protocols.</p>
+
+<h3>
+<a name="user-content-internal-adt-protocol" class="anchor" href="#internal-adt-protocol"><span class="octicon octicon-link"></span></a>Internal ADT protocol</h3>
+
+<p>For instance, Finitio-rb provides a more idiomatic way of connecting Ruby
+classes to information types. The information contracts may indeed be moved to
+the class itself, as one would probably do it, e.g. for testing purpose.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Color</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="vi">@r</span><span class="p">,</span> <span class="vi">@g</span><span class="p">,</span> <span class="vi">@b</span> <span class="o">=</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span>
+  <span class="k">end</span>
+  <span class="kp">attr_reader</span> <span class="ss">:r</span><span class="p">,</span> <span class="ss">:g</span><span class="p">,</span> <span class="ss">:b</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">rgb</span><span class="p">(</span><span class="n">tuple</span><span class="p">)</span>
+    <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">[</span><span class="ss">:r</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:g</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">to_rgb</span>
+    <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="vi">@r</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="vi">@g</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="vi">@b</span><span class="p">}</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</pre></div>
+
+<p>In Finitio-rb, the following definition, that refers to the builtin type but has
+no dresser/undresser, makes the assumption that the convention is met and
+will use the <code>Color.rgb(...)</code> and <code>Color#to_rgb</code> methods:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="user-content-external-adt-protocol" class="anchor" href="#external-adt-protocol"><span class="octicon octicon-link"></span></a>External ADT protocol</h3>
+
+<p>Sometimes, relying on methods provided by the abstraction itself is
+impossible or not wanted (e.g. because it would lead to core extensions
+considered intrusive). For this reason, <em>Finitio</em> bindings may also support
+so called 'external' protocols.</p>
+
+<p>Support for example that the <code>rgb</code> information contract is not
+provided by the <code>Color</code> class itself and that it's not possible
+to implement it there. Finitio-rb also allows the developer to define the contract
+methods in a specific module/class:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">module</span> <span class="nn">RgbContract</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">dress</span><span class="p">(</span><span class="n">tuple</span><span class="p">)</span>
+    <span class="no">Color</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuple</span><span class="o">[</span><span class="ss">:r</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:g</span><span class="o">]</span><span class="p">,</span> <span class="n">tuple</span><span class="o">[</span><span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">undress</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="p">{</span> <span class="ss">r</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">b</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</pre></div>
+
+<p>Then, in Finitio, the external contract can be specified as follows:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Color</span> <span class="o">=</span> <span class="o">.</span><span class="n">Color</span> <span class="o">&lt;</span><span class="n">rgb</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">r</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">g</span><span class="p">:</span> <span class="no">Byte</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="no">Byte</span><span class="p">}</span> <span class="o">.</span><span class="n">RgbContract</span>
+</pre></div>
+
+<p>The mechanism described here for abstract data types is actually more
+general and applies to most of <em>Finitio</em>'s work. The next section describes
+information contracts in more details.</p>
