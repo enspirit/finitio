@@ -68,12 +68,12 @@ validate input data and get friendly error messages.</p>
 </pre></div>
 </div>
 <div class="col-md-7">
-<pre><code>[patient] Missing attribute `name`
-[patient/id] Invalid value `27b3ceb0` for Uuid
-[patient/dob] Invalid value `1875-11-03` for Date (not alive)
-[symptoms/1] Invalid value "" for String( s | s.size &gt; 0 )
-[temperature] Invalid value 12.5 for Temperature (celsius)
-</code></pre>
+<div class="alert alert-danger">
+<p>[patient/id] Invalid value `27b3ceb0` for Uuid</p>
+<p>[patient/dob] Invalid value `1875-11-03` for Date (not alive)</p>
+<p>[symptoms/1] Invalid value "" for String( s | s.size &gt; 0 )</p>
+<p>[temperature] Invalid value 12.5 for Temperature (celsius)</p>
+</div>
 </div>
 </div>
 </div>
