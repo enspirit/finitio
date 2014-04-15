@@ -33,7 +33,16 @@
         <li id="li-try"><a href="/try">Try it!</a></li>
         <li id="li-download"><a href="/download">Download</a></li>
         <li id="li-use-cases"><a href="/use-cases">Use cases</a></li>
-        <li id="li-reference"><a href="/reference">Reference</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/reference"><em>Latest</em></a></li>
+            <li class="divider"></li>
+            <li><a href="/reference/0.1.x/type-system">0.1.x</a></li>
+            <li><a href="/reference/0.2.x/type-system">0.2.x</a></li>
+            <li><a href="/reference/0.3.x/type-system">0.3.x</a></li>
+          </ul>
+        </li>
       </ul>
       <div class="github-buttons nav navbar-nav navbar-right">
         <!-- github -->
