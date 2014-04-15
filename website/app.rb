@@ -1,4 +1,4 @@
-require './md_file'
+require 'md_file'
 require 'path'
 require 'sinatra'
 require 'wlang'
@@ -11,7 +11,7 @@ PAGES       = ROOT/"pages"
 set :cache, {}
 
 configure do
-  set :views, 'views'
+  set :views, ROOT/'views'
   set :wlang, layout: "html5".to_sym
 end
 
