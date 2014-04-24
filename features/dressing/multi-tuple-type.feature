@@ -4,8 +4,8 @@ Feature: MultiTupleType
 
     Given the System is
       """
-      Age  = Integer( i | i>=0 )
-      Info = { name : String, age :? Age }
+      Age   = Integer( i | i>=0 )
+      Info  = { name : String, age :? Age }
       """
 
   Scenario: Dressing a valid multi tuple
