@@ -94,8 +94,9 @@ article img {
   font-family: Courier, sans-serif;
   font-size: 14px;
 }
-.try .alert {
-  margin-top: 15px;
+.try .alert,
+.try button {
+  margin-top: 10px;
 }
 
 footer {

@@ -1,40 +1,29 @@
 <div class="try">
   <script src="/js/finitio.js"></script>
   <div class="row">
-    <div class="col-md-12">
-      <p>The demo below is powered by finitio.js (conforming Finitio 0.2).
-      The Finitio schema (at right) is divided into two parts:</p>
-      <ul>
-        <li>The system (below) abstracts from Javascript by using low-level
-            Finitio constructs to build higher level abstractions.
-        <li>The schema (above) raises the abstraction level further by providing
-            domain-driven data abstractions such as Uuid or Temperature.</li>
-      </ul>
-      <p>Play with it, by entering invalid dates of birth for example.
-         Observe also how Finitio fixes javascript failures with respect to
-         parsing dates.</p>
-      <hr/>
+    <div class="col-md-6">
+      <p>Schema</p>
+      <textarea id="try-schema">+{schema}</textarea>
     </div>
-  </div>
-  <div class="row">
     <div class="col-md-6">
       <p>Data (json)</p>
       <textarea id="try-data">+{data}</textarea>
     </div>
-
-    <div class="col-md-6">
-      <p>Schema (finitio &mdash; high-level)</p>
-      <textarea id="try-schema">+{schema}</textarea>
+  </div>
+  <div class="row">
+    <div class="col-md-1">
+      <button id="try-validate" class="btn btn-primary">Validate</button>
+    </div>
+    <div class="col-md-11">
+      <pre id="try-feedback" class="alert"></pre>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-6">
-      <button id="try-validate" class="btn btn-primary">Validate</button>
-      <div id="try-feedback" class="alert"></div>
-    </div>
-    <div class="col-md-6">
-      <p>System (finitio &mdash; low-level js binding)</p>
-      <textarea id="try-system">+{system}</textarea>
+    <div class="col-md-12">
+      <p>The demo above is powered by finitio.js 0.1 (conforming Finitio 0.3).
+         Play with it, by entering invalid dates of birth for example.
+         Observe also how Finitio fixes javascript failures with respect to
+         parsing dates.</p>
     </div>
   </div>
 </div>
@@ -42,21 +31,30 @@
 $(function(){
   $("#try-validate").click(function(){
     var schema = $("#try-schema").val(),
-        data   = $("#try-data").val(),
-        system = $("#try-system").val();
+        data   = $("#try-data").val();
+    var system = null, coerced = null;
     try {
-      var sys = Finitio.parse(system, { world: { Finitio: Finitio } });
-          sys = sys.parse(schema);
-      var coerced = sys.dress(JSON.parse(data));
-      $("#try-feedback").text("Data is valid!");
-      $("#try-feedback").removeClass("alert-danger");
-      $("#try-feedback").addClass("alert-success");
-    } catch (ex) {
-      var msg = ex.message;
-      if (ex.location) {
-        msg = "[" + ex.location + "] " + msg;
+      system = Finitio.system(schema);
+      try {
+        var coerced = system.dress(JSON.parse(data));
+        $("#try-feedback").text("Data is valid!");
+        $("#try-feedback").removeClass("alert-danger");
+        $("#try-feedback").addClass("alert-success");
+      } catch (ex) {
+        if (ex.rootCause) {
+          $("#try-feedback").html(ex.explainTree());
+        } else {
+          $("#try-feedback").text(ex.message);
+        }
+        $("#try-feedback").removeClass("alert-success");
+        $("#try-feedback").addClass("alert-danger");
       }
-      $("#try-feedback").text(msg);
+    } catch (ex) {
+      if (ex.rootCause) {
+        $("#try-feedback").html(ex.rootCause.message);
+      } else {
+        $("#try-feedback").text(ex.message);
+      }
       $("#try-feedback").removeClass("alert-success");
       $("#try-feedback").addClass("alert-danger");
     }
