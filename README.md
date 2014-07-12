@@ -17,8 +17,8 @@ puts the emphasis on precision. *Finitio* comes with a dedicated type system for
 ## Contributing
 
 Please join the [google
-group](https://groups.google.com/forum/#!forum/q-data-lang) for questions and
-for discussing about Finitio.
+group](https://groups.google.com/d/forum/finitio) for questions and
+discussions about Finitio.
 
 We also welcome pull-requests with cucumber features demonstrating use cases
 and suggesting new features! Especially welcome if an implementation already
