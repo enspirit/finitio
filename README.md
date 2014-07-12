@@ -7,7 +7,7 @@ puts the emphasis on precision. *Finitio* comes with a dedicated type system for
 ## Links
 
 * [Official *Finitio* web-site](http://www.finitio.io)
-* [Google group](https://groups.google.com/forum/#!forum/q-data-lang)
+* [Google group](https://groups.google.com/d/forum/finitio)
 
 ## Implementation
 
