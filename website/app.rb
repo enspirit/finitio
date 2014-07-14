@@ -32,12 +32,20 @@ def md_file(base, url)
   source = source/'index.md' if source.directory?
   source = MdFile.new(source)
   if source.ok?
+    # Extract data
     data = source.data
     data = data.merge({
       "text"    => source.html,
       "current" => url[/^([^\/]+)/, 1] || 'home'
     })
-    wlang data['layout'].to_sym, locals: data
+
+    # Set the options
+    options = {}
+    options[:locals] = data
+    options[:layout] = data["html"].to_sym if data["html"]
+
+    # Instantiate
+    wlang data['layout'].to_sym, options
   else
     not_found
   end
