@@ -37,17 +37,26 @@ end
 
 end
 
-###################################################################### unhappy
-
-describe 'get /reference/0.1.x/foo' do
+describe 'get /reference/0.3.x/{path}' do
   include Rack::Test::Methods
 
   it "works" do
-    get '/reference/../pages/intro'
-    expect(last_response).not_to be_ok
-    expect(last_response.status).to eq(404)
+    get '/reference/0.3.x/type-system'
+    expect(last_response).to be_ok
   end
 end
+
+describe 'get /reference/latest/{path}' do
+  include Rack::Test::Methods
+
+  it "works" do
+    get '/reference/latest/type-system'
+    expect(last_response.status).to eq(302)
+    expect(last_response.headers['Location']).to match(%r{/reference/#{CURRENT_VER}/type-system$})
+  end
+end
+
+###################################################################### unhappy
 
 describe 'get /reference/../pages/intro' do
   include Rack::Test::Methods
@@ -55,5 +64,6 @@ describe 'get /reference/../pages/intro' do
   it "works" do
     get '/reference/../pages/intro'
     expect(last_response).not_to be_ok
+    expect(last_response.status).to eq(404)
   end
 end

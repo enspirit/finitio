@@ -21,6 +21,10 @@ get '/' do
   call(env.merge("PATH_INFO" => "/home"))
 end
 
+get '/reference/latest/*' do |url|
+  redirect "/reference/#{CURRENT_VER}/#{url}"
+end
+
 get '/reference' do
   redirect "/reference/#{CURRENT_VER}/type-system"
 end
