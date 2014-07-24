@@ -12,6 +12,7 @@ set :cache, {}
 
 configure do
   set :views, ROOT/'views'
+  set :pages, ROOT/'pages'
   set :wlang, layout: "html5".to_sym
 end
 
@@ -27,6 +28,16 @@ end
 
 get '/reference' do
   redirect "/reference/#{CURRENT_VER}/type-system"
+end
+
+### Images
+
+get %r{\.png$} do
+  if (file = settings.pages/request.path[1..-1]).exists?
+    send_file file
+  else
+    not_found
+  end
 end
 
 ### Pages

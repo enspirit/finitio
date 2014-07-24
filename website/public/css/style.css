@@ -88,6 +88,36 @@ article img {
   padding-top: 15px;
 }
 
+.blog img {
+  display: block;
+  width: 45%;
+  padding: 40px;
+  padding-top: 0px;
+  margin-bottom: 10px;
+}
+.blog p:not(.noclear):nth-child(even) img {
+  float: right;
+}
+.blog p:not(.noclear):nth-child(odd) img {
+  float: left;
+}
+.blog p {
+  padding: 10px 0px;
+  clear: both;
+}
+.blog p.noclear {
+  clear: none;
+}
+.blog .date {
+  text-align: right;
+  padding: 0px;
+  margin: 0px;
+  margin-bottom: 15px;
+}
+.blog h1 {
+  margin-bottom: 5px;
+}
+
 .try textarea {
   width: 100%;
   height: 300px;
