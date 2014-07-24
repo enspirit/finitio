@@ -53,6 +53,7 @@ def md_file(base, url)
       "text"    => source.html,
       "current" => url[/^([^\/]+)/, 1] || 'home'
     })
+    data['title'] ||= source.title
 
     # Set the options
     options = {}

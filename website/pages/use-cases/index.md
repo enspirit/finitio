@@ -7,6 +7,7 @@ toc:
   children:
   - href: use-cases/cleaning-csv-files
     label: Cleaning .csv files
+title: Finitio - Use Cases
 ---
 *Finitio* can be used in many places where data is involved. In particular, it
 can be used for:

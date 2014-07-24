@@ -47,6 +47,10 @@ class MdFile
     @md ||= (md_raw =~ FRONT_MATTER) ? $' : md_raw
   end
 
+  def title
+    md && ("Finitio - " + (md[/^# (.*)$/, 1] || 'A Data Language'))
+  end
+
   def html_file
     source.sub_ext(".html")
   end

@@ -9,6 +9,7 @@ toc:
     label: Ruby
   - href: #javascript
     label: Javascript
+title: Finitio - Download
 ---
 The projects below provide *Finitio* implementation in various host languages.
 [Contact us](mailto:blambeau@gmail.com) or fork this page on github to add
