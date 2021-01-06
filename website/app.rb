@@ -1,4 +1,4 @@
-require 'md_file'
+require_relative 'md_file'
 require 'path'
 require 'sinatra'
 require 'wlang'
@@ -32,7 +32,7 @@ end
 
 ### Images
 
-get %r{\.png$} do
+get %r{\.png} do
   if (file = settings.pages/request.path[1..-1]).exists?
     send_file file
   else
