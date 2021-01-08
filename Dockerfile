@@ -8,6 +8,7 @@ RUN bundle install
 
 FROM ruby:2.7.2-slim-buster as runtime
 COPY --from=builder /usr/local/bundle /usr/local/bundle
+WORKDIR /finitio
 COPY . .
 
 EXPOSE 4000

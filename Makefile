@@ -1,19 +1,25 @@
-container = finitio
-
+IMAGE = enspirit/finitio
+CONTAINER = finitio
 ps:
 	docker ps
 
-build:
-	docker build -t $(container) .
+image:
+	docker build -t $(IMAGE) .
+
+push-image:
+	docker push $(IMAGE)
 
 up:
-	docker run -d -p 4000:4000 --rm --name $(container) $(container)
+	docker run -d -p 4000:4000 --rm --name $(CONTAINER) $(IMAGE)
 
 logs:
-	docker logs -f $(container)
+	docker logs -f $(CONTAINER)
 
 down:
-	docker stop $(container)
+	docker stop $(CONTAINER)
+
+bash:
+	docker exec -it $(CONTAINER) bash
 
 restart:
-	docker container restart $(container)
+	docker container restart $(CONTAINER)
