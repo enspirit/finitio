@@ -1,0 +1,6 @@
+namespace: enspirit
+url: finitio.io
+container:
+  image: enspirit/finitio
+  targetPort: 4000
+  port: 80

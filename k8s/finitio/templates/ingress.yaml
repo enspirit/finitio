@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .Release.Name }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+    - host: www.{{ .Values.url }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ .Release.Name}}
+              servicePort: {{ .Values.container.port }}
+    - host: {{ .Values.url }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ .Release.Name }}
+              servicePort: {{ .Values.container.port }}
+  tls:
+    - hosts:
+        - www.{{ .Values.url }}
+      secretName: {{ .Release.Name }}-ssl
+    - hosts:
+        - {{ .Values.url }}
+      secretName: {{ .Release.Name }}-root-ssl
