@@ -1,12 +1,13 @@
-FROM ruby:2.7.2-slim-buster as builder
+FROM ruby:2.7.2-alpine3.13 as builder
 
-RUN apt-get update && apt-get install -y build-essential
+RUN apk --update add --no-cache --virtual run-dependencies \
+  build-base
 
 WORKDIR /finitio
 COPY Gemfile* /finitio/
 RUN bundle install
 
-FROM ruby:2.7.2-slim-buster as runtime
+FROM ruby:2.7.2-alpine3.13 as runtime
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 WORKDIR /finitio
 COPY . .
