@@ -1,4 +1,4 @@
-FROM ruby:2.7.2-alpine3.13 as builder
+FROM ruby:2.7.3-alpine3.13 as builder
 
 RUN apk --update add --no-cache --virtual run-dependencies \
   build-base
@@ -7,7 +7,7 @@ WORKDIR /finitio
 COPY Gemfile* /finitio/
 RUN bundle install
 
-FROM ruby:2.7.2-alpine3.13 as runtime
+FROM ruby:2.7.3-alpine3.13 as runtime
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 WORKDIR /finitio
 COPY . .
