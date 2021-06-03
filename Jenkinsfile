@@ -46,6 +46,21 @@ pipeline {
         }
       }
     }
+
+    stage ('Redeploy finitio') {
+      when {
+        branch 'master'
+      }
+      steps {
+        container('builder') {
+          script {
+            withCredentials([file(credentialsId: 'jenkins-q8s-prod-kubeconfig', variable: 'KUBECONFIG')]) {
+              sh 'make redeploy'
+            }
+          }
+        }
+      }
+    }
   }
 
   post {

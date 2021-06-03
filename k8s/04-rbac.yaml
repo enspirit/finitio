@@ -1,0 +1,33 @@
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: enspirit
+  name: finitio-redeploy
+rules:
+  - apiGroups:
+      - apps
+      - extensions
+    resources:
+      - deployments
+    resourceNames:
+      - finitio
+    verbs:
+      - get
+      - patch
+      - list
+      - watch
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: jenkins-finitio-redeploy
+  namespace: enspirit
+subjects:
+  - kind: ServiceAccount
+    name: jenkins
+    namespace: default
+roleRef:
+  kind: Role
+  name: finitio-redeploy
+  apiGroup: rbac.authorization.k8s.io
