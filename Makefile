@@ -9,6 +9,9 @@ image:
 push-image:
 	docker push $(IMAGE)
 
+redeploy:
+	@kubectl rollout restart deployment -n enspirit finitio
+
 up:
 	docker run -d -p 4000:4000 --rm --name $(CONTAINER) $(IMAGE)
 
