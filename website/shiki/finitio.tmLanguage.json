@@ -1,0 +1,168 @@
+{
+  "name": "finitio",
+  "scopeName": "source.finitio",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#import" },
+    { "include": "#regexp" },
+    { "include": "#string" },
+    { "include": "#lambda" },
+    { "include": "#constraint" },
+    { "include": "#contract" },
+    { "include": "#builtin" },
+    { "include": "#typedef" },
+    { "include": "#attribute" },
+    { "include": "#anytype" },
+    { "include": "#number" },
+    { "include": "#typename" },
+    { "include": "#operator" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.number-sign.finitio",
+      "match": "#.*$"
+    },
+    "import": {
+      "match": "(@import)\\s+([^\\s#]+)",
+      "captures": {
+        "1": { "name": "keyword.control.import.finitio" },
+        "2": { "name": "string.unquoted.import.finitio" }
+      }
+    },
+    "regexp": {
+      "name": "string.regexp.finitio",
+      "begin": "/(?=(?:\\\\.|[^/\\n])+/)",
+      "end": "/[a-z]*",
+      "patterns": [{ "name": "constant.character.escape.finitio", "match": "\\\\." }]
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.finitio",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [{ "name": "constant.character.escape.finitio", "match": "\\\\." }]
+        },
+        {
+          "name": "string.quoted.single.finitio",
+          "begin": "'",
+          "end": "'",
+          "patterns": [{ "name": "constant.character.escape.finitio", "match": "\\\\." }]
+        }
+      ]
+    },
+    "lambda": {
+      "comment": "Dresser / undresser functions, e.g. \\( tuple | Color.new(tuple.r) )",
+      "begin": "(\\\\)\\s*(\\()",
+      "beginCaptures": {
+        "1": { "name": "keyword.operator.lambda.finitio" },
+        "2": { "name": "punctuation.section.parens.begin.finitio" }
+      },
+      "end": "\\)",
+      "endCaptures": { "0": { "name": "punctuation.section.parens.end.finitio" } },
+      "patterns": [
+        {
+          "match": "\\s*([a-z_][A-Za-z0-9_]*)\\s*(\\|)",
+          "captures": {
+            "1": { "name": "variable.parameter.finitio" },
+            "2": { "name": "keyword.operator.pipe.finitio" }
+          }
+        },
+        { "include": "#hostcode" }
+      ]
+    },
+    "constraint": {
+      "comment": "Sub-type constraints, e.g. Integer( i | positive: i >= 0 )",
+      "begin": "(\\()(?=[^)]*\\|)",
+      "beginCaptures": { "1": { "name": "punctuation.section.parens.begin.finitio" } },
+      "end": "\\)",
+      "endCaptures": { "0": { "name": "punctuation.section.parens.end.finitio" } },
+      "patterns": [
+        {
+          "match": "\\s*([a-z_][A-Za-z0-9_]*)\\s*(\\|)",
+          "captures": {
+            "1": { "name": "variable.parameter.finitio" },
+            "2": { "name": "keyword.operator.pipe.finitio" }
+          }
+        },
+        {
+          "comment": "Named constraint label, e.g. `positive:`",
+          "match": "([a-zA-Z_][A-Za-z0-9_]*)\\s*(:)(?!:)",
+          "captures": {
+            "1": { "name": "entity.name.function.constraint.finitio" },
+            "2": { "name": "punctuation.separator.finitio" }
+          }
+        },
+        { "include": "#hostcode" }
+      ]
+    },
+    "hostcode": {
+      "comment": "Constraint bodies are expressions of the host language.",
+      "patterns": [
+        { "include": "#regexp" },
+        { "include": "#string" },
+        { "include": "#number" },
+        { "name": "keyword.operator.finitio", "match": "(==|!=|>=|<=|=~|&&|\\|\\||[<>+\\-*/%!])" },
+        { "name": "keyword.control.finitio", "match": "\\b(and|or|not|true|false|nil|null)\\b" },
+        { "name": "support.class.finitio", "match": "\\b[A-Z][A-Za-z0-9_]*\\b" }
+      ]
+    },
+    "contract": {
+      "comment": "Information contract marker, e.g. <celsius>",
+      "match": "(<)([a-z][A-Za-z0-9_]*)(>)",
+      "captures": {
+        "1": { "name": "punctuation.definition.contract.begin.finitio" },
+        "2": { "name": "entity.name.tag.contract.finitio" },
+        "3": { "name": "punctuation.definition.contract.end.finitio" }
+      }
+    },
+    "builtin": {
+      "comment": "Host-language class reference, e.g. .Integer",
+      "match": "(\\.)([A-Z][A-Za-z0-9_]*(?:::[A-Z][A-Za-z0-9_]*)*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.builtin.finitio" },
+        "2": { "name": "support.class.builtin.finitio" }
+      }
+    },
+    "typedef": {
+      "comment": "Type definition left-hand side, e.g. `Temp =`",
+      "match": "^\\s*([A-Z][A-Za-z0-9_]*)\\s*(?:(\\()([^)]*)(\\)))?\\s*(=)(?!=)",
+      "captures": {
+        "1": { "name": "entity.name.type.definition.finitio" },
+        "2": { "name": "punctuation.section.parens.begin.finitio" },
+        "3": { "name": "variable.parameter.generic.finitio" },
+        "4": { "name": "punctuation.section.parens.end.finitio" },
+        "5": { "name": "keyword.operator.assignment.finitio" }
+      }
+    },
+    "attribute": {
+      "comment": "Tuple / relation attribute, e.g. `name : String` or `since :? Date`",
+      "match": "([a-z_][A-Za-z0-9_]*)\\s*(:\\??)(?!:)",
+      "captures": {
+        "1": { "name": "variable.other.member.finitio" },
+        "2": { "name": "punctuation.separator.key-value.finitio" }
+      }
+    },
+    "anytype": {
+      "comment": "The Any type is a bare dot.",
+      "match": "(?<![A-Za-z0-9_.])\\.(?![A-Za-z0-9_.])",
+      "name": "constant.language.any.finitio"
+    },
+    "number": {
+      "name": "constant.numeric.finitio",
+      "match": "\\b\\d+(\\.\\d+)?\\b"
+    },
+    "typename": {
+      "name": "support.type.finitio",
+      "match": "\\b[A-Z][A-Za-z0-9_]*\\b"
+    },
+    "operator": {
+      "patterns": [
+        { "name": "keyword.operator.rest.finitio", "match": "\\.\\.\\." },
+        { "name": "keyword.operator.arrow.finitio", "match": "->" },
+        { "name": "keyword.operator.union.finitio", "match": "\\|" },
+        { "name": "keyword.operator.assignment.finitio", "match": "=" }
+      ]
+    }
+  }
+}

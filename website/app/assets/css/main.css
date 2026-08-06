@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Dark mode is driven by a `.dark` class on <html>, set before paint by a
+   plugin so there is no flash of the wrong theme. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter var', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas,
+    monospace;
+
+  /* Finitio's accent: a precise, slightly cool indigo. */
+  --color-brand-50: oklch(0.97 0.014 275);
+  --color-brand-100: oklch(0.94 0.031 275);
+  --color-brand-200: oklch(0.89 0.06 275);
+  --color-brand-300: oklch(0.81 0.1 275);
+  --color-brand-400: oklch(0.71 0.15 275);
+  --color-brand-500: oklch(0.62 0.19 275);
+  --color-brand-600: oklch(0.54 0.21 275);
+  --color-brand-700: oklch(0.46 0.19 275);
+  --color-brand-800: oklch(0.39 0.15 275);
+  --color-brand-900: oklch(0.33 0.11 275);
+  --color-brand-950: oklch(0.23 0.08 275);
+
+  /* Validity signals, reused by the playground and the landing demo. */
+  --color-valid: oklch(0.6 0.15 155);
+  --color-invalid: oklch(0.62 0.2 25);
+  /* A "no, and that's the point" answer — informational, not a failure. */
+  --color-note: oklch(0.68 0.14 70);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Sticky header offset for in-page anchors. */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    @apply bg-white text-slate-700 antialiased;
+    @apply dark:bg-slate-950 dark:text-slate-300;
+  }
+
+  ::selection {
+    @apply bg-brand-500/25;
+  }
+}
+
+@layer components {
+  /* Nuxt Content emits both themes as `--shiki-default` / `--shiki-dark` on
+     generated token classes, and leaves the background to us. */
+  .shiki,
+  .shiki span {
+    color: var(--shiki-default);
+  }
+
+  .dark .shiki,
+  .dark .shiki span {
+    color: var(--shiki-dark);
+  }
+
+  .prose-finitio {
+    @apply prose prose-slate dark:prose-invert max-w-none;
+    @apply prose-headings:scroll-mt-28 prose-headings:font-semibold;
+    @apply prose-a:text-brand-600 dark:prose-a:text-brand-400 prose-a:no-underline hover:prose-a:underline;
+    @apply prose-code:before:content-none prose-code:after:content-none;
+    @apply prose-pre:rounded-xl prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-slate-800;
+    @apply prose-img:rounded-lg prose-img:border prose-img:border-slate-200 dark:prose-img:border-slate-800;
+  }
+
+  /* Inline code inside prose: distinct from fenced blocks. */
+  .prose-finitio :not(pre) > code {
+    @apply rounded-md border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[0.85em] font-medium text-slate-800;
+    @apply dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200;
+  }
+
+  /* Typography ships a dark <pre> for both schemes; we highlight per theme
+     instead, so the block follows the page. */
+  .prose-finitio pre {
+    @apply bg-slate-50 dark:bg-slate-900/70;
+  }
+
+  /* Nuxt Content wraps headings in self-links. They must not read as links. */
+  .prose-finitio :is(h1, h2, h3, h4, h5, h6) a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+  }
+
+  /* The csv,conf talk is written as slide-then-commentary. Each slide floats
+     beside its paragraph, alternating sides, as it did on the original site.
+     `p.noclear` is authored in the source to let a paragraph carry on beside
+     the slide above it instead of starting below it. */
+  .prose-blog p:nth-child(odd) > img {
+    float: left;
+    margin: 0 2rem 1rem 0;
+  }
+
+  .prose-blog p:nth-child(even) > img {
+    float: right;
+    margin: 0 0 1rem 2rem;
+  }
+
+  .prose-blog p > img {
+    width: 45%;
+    border-radius: 0.5rem;
+  }
+
+  .prose-blog p {
+    clear: both;
+  }
+
+  .prose-blog p.noclear {
+    clear: none;
+  }
+
+  /* Below that, floating steals too much width to read comfortably. */
+  @media (width < 48rem) {
+    .prose-blog p > img {
+      float: none !important;
+      width: 100%;
+      margin: 0 0 1rem;
+    }
+  }
+}

@@ -14,6 +14,16 @@ puts the emphasis on precision. *Finitio* comes with a dedicated type system for
 * [Finitio-rb](https://github.com/blambeau/finitio-rb) - Finitio in Ruby (validation & coercing, 0.x.y release)
 * [Finitio-js](https://github.com/llambeau/finitio.js) - Finitio in Javascript (validation & coercing, about to release)
 
+## Web site
+
+[www.finitio.io](http://www.finitio.io) is built from `website/`, a
+statically generated [Nuxt](https://nuxt.com) application. See
+[website/README.md](website/README.md) to run it locally.
+
+The `Dockerfile` at the root builds that site and serves the result with
+nginx on port 4000; `make image` / `make push-image` / `make redeploy` drive
+the pipeline.
+
 ## Contributing
 
 Please join the [google

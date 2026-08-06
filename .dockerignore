@@ -1,0 +1,11 @@
+**/node_modules
+**/.output
+**/.nuxt
+**/.data
+.git
+.gitignore
+
+# Language specification material, not part of the site image.
+snippets/
+features/
+CHANGELOG.md
