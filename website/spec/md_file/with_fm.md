@@ -1,5 +1,0 @@
----
-layout:
-  twocols
----
-Hello world
